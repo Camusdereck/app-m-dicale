@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMSTE - Consultation Médicale en Ligne</title>
+    <meta name="description" content="Consultations médicales en ligne en Côte d'Ivoire. Réservez facilement avec des médecins qualifiés via MediConnect CI.">
+    
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <div class="logo-icon me-2">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <span class="fw-bold text-dark">EMSTE</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto menu">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#témoignages">Témoignages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+                
+                <div class="btn-nav">
+                    <a href="contact-prin" class="btn btn-primary btn-ins-1">Je Consulte</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100 pt-5 ">
+                <div class="col-lg-6  ml-2">
+                    <div class="hero-content">
+                        <h1 class="display-4 fw-bold fs-1 mb-4">
+                            Consultez un médecin<br> <span class="text-primary-dark">en Ligne</span> 24h/24
+                        </h1>
+                       <ul class="list-unstyled list mb-4">
+                            <li><i class="fas fa-check text-success me-2"></i>Connexion HD sécurisée</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Enregistrement automatique</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Partage de documents</li>
+                        </ul>
+                        <div class="hero-buttons">
+                            <a href="#contactform" class="btn btn-lg me-3 btn-perso1">
+                                <i class="fas fa-user-plus me-2"></i>Je Prends Rendez-vous
+                            </a>
+                        </div>
+                        
+                        <div class="hero-stats mt-5">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h3 class=" fw-bold">20+</h3>
+                                    <p class="">Médecins</p>
+                                </div>
+                                <div class="col-4">
+                                    <h3 class=" fw-bold">10K+</h3>
+                                    <p class="">Consultations</p>
+                                </div>
+                                <div class="col-4">
+                                    <h3 class=" fw-bold">24h/7</h3>
+                                    <p class="">Support</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="images/medium-shot-smiley-doctor-with-coat__1___1_-removebg-preview.png"Consultation médicale" class="img-fluid rounded-3 shadow-lg hero-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact-prin" class="contact-prin">
+        <div class="container bg-dark container-contact">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-white">Remplissez le formulaire ci-dessous</h1>
+                <p class="lead text-light fw-bold">Remplissez le formulaire afin de réserver votre consultation , un médécin vous prendra en charge selon que créneau que vous aurez choisi</p>
+            </div>
+
+            <div class="row g-5">
+                <!-- Contact Info -->
+                
+                <!-- Contact Form -->
+                <div class="col-lg-12">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-5">
+                            <h3 class="mb-4 text-info">Remplissez ici</h3>
+                            
+                            <form id="contactForm" novalidate>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="firstName" class="form-label">Prénom *</label>
+                                        <input type="text" class="form-control" id="firstName" placeholder="Ex:  kouadjo" required>
+                                        <div class="invalid-feedback">Le prénom est requis.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lastName" class="form-label">Nom *</label>
+                                        <input type="text" class="form-control" id="lastName" placeholder="Ex:  kouadjo" required>
+                                        <div class="invalid-feedback">Le nom est requis.</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email *</label>
+                                        <input type="email" class="form-control" id="email" placeholder="Ex:  Kouamekouadjo@gmail.com" required>
+                                        <div class="invalid-feedback">Email valide requis.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone" class="form-label">Téléphone</label>
+                                        <input type="tel" class="form-control" id="phone" placeholder="+225 XX XX XX XX XX">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="subject" class="form-label">Spécialité médicale*</label>
+                                    <select class="form-select" id="subject" required>
+                                        <option value="">Choisissez</option>
+                                        <option value="support">Médecin Généraliste</option>
+                                        <option value="billing">Pédiatre</option>
+                                        <option value="appointment">Gynécologue</option>
+                                        <option value="partnership">Dermatologue</option>
+                                        <option value="other">Autre</option>
+                                    </select>
+                                    <div class="invalid-feedback">Veuillez choisir un sujet.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                  <label for="date" class="form-label">Date du rendez-vous</label>
+                                  <input type="date" class="form-control" id="date" name="date" required>
+                                </div>
+
+                                <div class="mb-3">
+                                 <label for="mode" class="form-label">Mode de consultation</label>
+                                 <select class="form-select" id="mode" name="mode" required>
+                                 <option value="">-- Choisissez --</option>
+                                 <option value="video">Consultation Vidéo</option>
+                                 <option value="messagerie">Par Messagerie</option>
+                                 </select>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="message" class="form-label">Motif de la consultation (optionnel) *</label>
+                                    <textarea class="form-control" id="message" rows="5" placeholder="Décrivez brièvement vos symptômes..."></textarea>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="privacy" required>
+                                    <label class="form-check-label" for="privacy">
+                                        J'accepte la <a href="#" class="text-info">politique de confidentialité</a> *
+                                    </label>
+                                    <div class="invalid-feedback">Vous devez accepter la politique de confidentialité.</div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Confirmer le Rendez-vous
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-primary text-white py-5 pt-5">
+        <div class="container bg-primary-dark container-footer">
+            <div class="row g-4 row-footer">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="logo-icon me-2">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <h5 class="mb-0">MediConnect CI</h5>
+                    </div>
+                    <p class="text-muted">
+                        La première plateforme de consultation médicale en ligne en Côte d'Ivoire. 
+                        Connectez-vous facilement avec des professionnels de santé qualifiés.
+                    </p>
+                </div>
+                
+                <div class="col-lg-2">
+                    <h6 class="text-uppercase fw-bold">Liens rapides</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-muted text-decoration-none">Accueil</a></li>
+                        <li><a href="#services" class="text-muted text-decoration-none">Services</a></li>
+                        <li><a href="register.html" class="text-muted text-decoration-none">Inscription</a></li>
+                        <li><a href="contact.html" class="text-muted text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3">
+                    <h6 class="text-uppercase fw-bold">Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">Centre d'aide</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Politique de confidentialité</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Conditions d'utilisation</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3">
+                    <h6 class="text-uppercase fw-bold">Contact</h6>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fas fa-envelope me-2"></i>support@mediconnect-ci.com</li>
+                        <li><i class="fas fa-phone me-2"></i>+225 XX XX XX XX XX</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Abidjan, Côte d'Ivoire</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="text-center">
+                <p class="text-muted mb-0">
+                    © 2025 MediConnect CI. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </footer>
+

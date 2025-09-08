@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - MediConnect CI</title>
+    <meta name="description" content="Contactez l'équipe MediConnect CI pour toute question ou support technique.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <div class="logo-icon me-2">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <span class="fw-bold text-primary">MediConnect CI</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+                
+                <div class="navbar-nav">
+                    <a href="login.html" class="nav-link me-2">Connexion</a>
+                    <a href="registre.html" class="btn btn-primary">Inscription</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Section -->
+    <section class="contact-prin">
+        <div class="container bg-dark container-contact">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-white">Contactez-nous</h1>
+                <p class="lead text-dark fw-bold">Notre équipe est là pour vous accompagner</p>
+            </div>
+
+            <div class="row g-5">
+                <!-- Contact Info -->
+                <div class="col-lg-4">
+                    <div class="contact-info">
+                        <h3 class="mb-4 text-white">Informations de contact</h3>
+                        
+                        <div class="contact-item mb-4 text-white">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Email</h6>
+                                    <p class="text-white mb-0">support@mediconnect-ci.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 text-white">Téléphone</h6>
+                                    <p class="text-white mb-0">+225 XX XX XX XX XX</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3">
+                                    <i class="fab fa-whatsapp"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 text-white">WhatsApp</h6>
+                                    <p class="text-white mb-0">+225 XX XX XX XX XX</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item mb-4">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon me-3">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 text-white">Adresse</h6>
+                                    <p class="text-white mb-0">Abidjan, Cocody<br>Côte d'Ivoire</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Direct Button -->
+                        <a href="https://wa.me/225XXXXXXXXX" class="btn btn-success w-100 mb-4" target="_blank">
+                            <i class="fab fa-whatsapp me-2"></i>Contacter sur WhatsApp
+                        </a>
+
+                        <!-- Hours -->
+                        <div class="hours-card">
+                            <h6 class="mb-3">Heures d'ouverture</h6>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Lundi - Vendredi</span>
+                                <span>8h00 - 18h00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Samedi</span>
+                                <span>9h00 - 15h00</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Dimanche</span>
+                                <span class="text-danger">Fermé</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="col-lg-8">
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-5">
+                            <h3 class="mb-4 text-info">Envoyez-nous un message</h3>
+                            
+                            <form id="contactForm" novalidate>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="firstName" class="form-label">Prénom *</label>
+                                        <input type="text" class="form-control" id="firstName" placeholder="Ex:  kouadjo" required>
+                                        <div class="invalid-feedback">Le prénom est requis.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="lastName" class="form-label">Nom *</label>
+                                        <input type="text" class="form-control" id="lastName" placeholder="Ex:  kouadjo" required>
+                                        <div class="invalid-feedback">Le nom est requis.</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email *</label>
+                                        <input type="email" class="form-control" id="email" placeholder="Ex:  Kouamekouadjo@gmail.com" required>
+                                        <div class="invalid-feedback">Email valide requis.</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="phone" class="form-label">Téléphone</label>
+                                        <input type="tel" class="form-control" id="phone" placeholder="+225 XX XX XX XX XX">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="subject" class="form-label">Sujet *</label>
+                                    <select class="form-select" id="subject" required>
+                                        <option value="">Choisir un sujet</option>
+                                        <option value="support">Support technique</option>
+                                        <option value="billing">Facturation</option>
+                                        <option value="appointment">Rendez-vous</option>
+                                        <option value="partnership">Partenariat</option>
+                                        <option value="other">Autre</option>
+                                    </select>
+                                    <div class="invalid-feedback">Veuillez choisir un sujet.</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="message" class="form-label">Message *</label>
+                                    <textarea class="form-control" id="message" rows="5" placeholder="Décrivez votre demande en détail..." required></textarea>
+                                    <div class="invalid-feedback">Le message est requis.</div>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="privacy" required>
+                                    <label class="form-check-label" for="privacy">
+                                        J'accepte la <a href="#" class="text-primary">politique de confidentialité</a> *
+                                    </label>
+                                    <div class="invalid-feedback">Vous devez accepter la politique de confidentialité.</div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i>Envoyer le message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-5 bg-light faq-sec">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold text-info">Questions fréquentes</h2>
+                <p class="lead text-muted">Trouvez rapidement les réponses à vos questions</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                    Comment créer un compte ?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Cliquez sur "Inscription" et choisissez votre type de compte (Patient ou Médecin). Remplissez le formulaire avec vos informations personnelles et validez votre email.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                    Comment réserver une consultation ?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Connectez-vous à votre compte, choisissez un médecin selon sa spécialité, sélectionnez un créneau disponible et procédez au paiement sécurisé.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                    Quels moyens de paiement acceptez-vous ?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Nous acceptons Orange Money, MTN Money, Moov Money, Wave et les cartes bancaires. Tous les paiements sont sécurisés et chiffrés.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                    La consultation est-elle sécurisée ?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Oui, toutes nos consultations sont chiffrées de bout en bout. Vos données médicales sont protégées selon les standards internationaux de sécurité.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-5">
+        <div class="container bg-primary container-footer">
+            <div class="row g-4 row-footer">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="logo-icon me-2">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <h5 class="mb-0">MediConnect CI</h5>
+                    </div>
+                    <p class="text-muted">
+                        La première plateforme de consultation médicale en ligne en Côte d'Ivoire. 
+                        Connectez-vous facilement avec des professionnels de santé qualifiés.
+                    </p>
+                </div>
+                
+                <div class="col-lg-2">
+                    <h6 class="text-uppercase fw-bold">Liens rapides</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-muted text-decoration-none">Accueil</a></li>
+                        <li><a href="#services" class="text-muted text-decoration-none">Services</a></li>
+                        <li><a href="register.html" class="text-muted text-decoration-none">Inscription</a></li>
+                        <li><a href="contact.html" class="text-muted text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3">
+                    <h6 class="text-uppercase fw-bold">Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">Centre d'aide</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Politique de confidentialité</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Conditions d'utilisation</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3">
+                    <h6 class="text-uppercase fw-bold">Contact</h6>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fas fa-envelope me-2"></i>support@mediconnect-ci.com</li>
+                        <li><i class="fas fa-phone me-2"></i>+225 XX XX XX XX XX</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Abidjan, Côte d'Ivoire</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="text-center">
+                <p class="text-muted mb-0">
+                    © 2025 MediConnect CI. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/contact.js"></script>
+</body>
+</html>

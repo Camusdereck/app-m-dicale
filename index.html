@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EMSTE - Consultation Médicale en Ligne</title>
+    <meta name="description" content="Consultations médicales en ligne en Côte d'Ivoire. Réservez facilement avec des médecins qualifiés via MediConnect CI.">
+    
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg fixed-top navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <div class="logo-icon me-2">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <span class="fw-bold text-dark">EMSTE</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto menu">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#témoignages">Témoignages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                </ul>
+                
+                <div class="btn-nav">
+                    <a href="login.html" class="nav-link me-2 btn-ins-2">Connexion</a>
+                    <a href="registre.html" class="btn btn-primary btn-ins-1">Inscription</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-100 pt-5 ">
+                <div class="col-lg-6  ml-2">
+                    <div class="hero-content">
+                        <h1 class="display-4 fw-bold fs-1 mb-4">
+                            Consultez un médecin<br> <span class="text-primary-dark">en Ligne</span> 24h/24
+                        </h1>
+                        <p class="lead text-dark fs-5 mb-4">
+                            Connectez-vous facilement avec des médecins qualifiés depuis chez vous. 
+                            Consultations sécurisées, paiements locaux et suivi médical personnalisé.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="#registre.html" class="btn btn-lg me-3 btn-perso1">
+                                <i class="fas fa-user-plus me-2"></i>Créer un compte
+                            </a>
+                            <a href="#services" class="btn btn-outline-primary btn-lg p-2">
+                                <i class="fas fa-info-circle me-2"></i>En savoir plus
+                            </a>
+                        </div>
+                        
+                        <div class="hero-stats mt-5">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h3 class=" fw-bold">20+</h3>
+                                    <p class="">Médecins</p>
+                                </div>
+                                <div class="col-4">
+                                    <h3 class=" fw-bold">10K+</h3>
+                                    <p class="">Consultations</p>
+                                </div>
+                                <div class="col-4">
+                                    <h3 class=" fw-bold">24h/7</h3>
+                                    <p class="">Support</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <img src="images/medium-shot-smiley-doctor-with-coat__1___1_-removebg-preview.png"Consultation médicale" class="img-fluid rounded-3 shadow-lg hero-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-5">
+        <div class="container or-services">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Nos Services</h2>
+                <p class="lead text-muted">Des solutions médicales complètes adaptées à vos besoins</p>
+            </div>
+            
+            <div class="row g-4 nos-services">
+                <div class="col-md-3">
+                    <div class="service-card h-100 p-2">
+                        <div class="service-icon">
+                            <i class="fas fa-video text-white"></i>
+                        </div>
+                        <h4>Consultation Vidéo</h4>
+                        <ul class="list-unstyled list">
+                            <li><i class="fas fa-check text-success me-2"></i>Connexion HD sécurisée</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Enregistrement automatique</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Partage de documents</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="service-card h-100 p-2">
+                        <div class="service-icon">
+                            <i class="fas fa-file-medical text-white"></i>
+                        </div>
+                        <h4>Dossier Médical</h4>
+                        <ul class="list-unstyled list">
+                            <li><i class="fas fa-check text-success me-2"></i>Historique complet</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Prescriptions électroniques</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Résultats d'analyses</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-3">
+                    <div class="service-card h-100 p-2">
+                        <div class="service-icon">
+                            <i class="fas fa-calendar-check text-white"></i>
+                        </div>
+                        <h4>Prise de RDV</h4>
+                        <ul class="list-unstyled list">
+                            <li><i class="fas fa-check text-success me-2"></i>Réservation en ligne</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Rappels automatiques</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Reprogrammation facile</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section class="py-5 section-why ">
+        <div class="container why-section">
+        <div class="header">
+            <h1 class="title">Comment ca <span class="simple">Marche?</span></h1>
+            <p class="subtitle mb-5">Un process simple et rapide</p>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-step">
+                <div class="step-circle"></div>
+                <div class="step-content mt-4">
+                    <div class="step-period">Étape1</div>
+                    <div class="step-title">Créez votre compte</div>
+                </div>
+            </div>
+            
+            <div class="timeline-step">
+                <div class="step-circle"></div>
+                <div class="step-content mt-4">
+                    <div class="step-period">Étape2</div>
+                    <div class="step-title">Choisissez votre mode</div>
+                </div>
+            </div>
+            
+            <div class="timeline-step">
+                <div class="step-circle"></div>
+                <div class="step-content mt-4">
+                    <div class="step-period">Étape3</div>
+                    <div class="step-title">Payez & consultez</div>
+                </div>
+            </div>
+    </div>
+    <div class="btn-ct">
+            <a href="#registre.html" class="btn btn-lg me-3 btn-perso-ct1">
+        <i class="bi bi-caret-right-fill"></i>Démarrer maintenant
+      </a> 
+      </div> 
+    </section>
+
+    <!-- Testimonials -->
+<section id="témoignages" class="testimonials-section">
+  <div class="testimonials-container mb-5">
+    <h2 class="testimonials-title mb-5">Vous en parlez mieux que nous</h2>
+    
+    <div class="testimonials-navigation">
+      <button class="nav-btn prev-btn" onclick="slideTestimonials(-1)" aria-label="Témoignage précédent">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="nav-btn next-btn" onclick="slideTestimonials(1)" aria-label="Témoignage suivant">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="testimonials-wrapper">
+      <div class="testimonials-slider" id="testimonials-slider">
+        <div class="testimonial-card p-3">
+          <div class="stars">
+            <span>★★★★★</span>
+          </div>
+          <h3 class="testimonial-name">Laetitia</h3>
+          <p class="testimonial-text">
+            Très pratique, rapide et sérieux. Cela permet une confirmation de diagnostic pour maladie type saisonnière [...] sans avoir à attendre en salle d'attente malade ou ne pas avoir de rendez-vous le jour même. Un questionnaire Medicale complet est à compléter avant d'avoir le retour du médecin.
+          </p>
+        </div>
+
+        <div class="testimonial-card p-3">
+          <div class="stars">
+            <span>★★★★★</span>
+          </div>
+          <h3 class="testimonial-name">Mireille</h3>
+          <p class="testimonial-text">
+            Le médecin répond rapidement. Dans mon cas il m'a dirigé vers un spécialiste, qui a pu suite à plusieurs échanges me proposer des examens. Je suis entièrement satisfaite et surtout soignée.
+          </p>
+        </div>
+
+        <div class="testimonial-card p-3">
+          <div class="stars">
+            <span>★★★★★</span>
+          </div>
+          <h3 class="testimonial-name">Marine</h3>
+          <p class="testimonial-text">
+            Alors que j'avais une affection à évolution très rapide, je ne trouvais pas de dermatologue qui pouvais me prendre dans un délai inférieur à 3 mois et dans un rayon de 100 km autour de chez moi. Médecin direct m'a permis d'avoir une consultation en seulement 2 jours. Sans cela j'aurais dû me rendre aux urgences. La prise en charge est...
+          </p>
+        </div>
+
+        <div class="testimonial-card p-3">
+          <div class="stars">
+            <span>★★★★★</span>
+          </div>
+          <h3 class="testimonial-name">Laurent</h3>
+          <p class="testimonial-text">
+            Prise de contact avec un médecin ne connaissant pas ma fille qui avait mal à la gorge. Prise en charge rapide en moins d'1h, diagnostic et ordonnance pour test angine et antibio en cas de contact avec le médecin en moins d'une heure. Résultat le soir à 18h.
+          </p>
+        </div>
+
+        <div class="testimonial-card p-3">
+          <div class="stars">
+            <span>★★★★★</span>
+          </div>
+          <h3 class="testimonial-name">Sophie</h3>
+          <p class="testimonial-text">
+            Service très efficace et professionnel. J'ai pu obtenir un diagnostic précis en quelques heures seulement. Le médecin a été très à l'écoute et m'a donné des conseils adaptés à ma situation. Je recommande vivement cette solution moderne de téléconsultation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const totalSlides = 5;
+    
+    function slideTestimonials(direction) {
+      const slider = document.getElementById('testimonials-slider');
+      
+      // Calculer le nombre de cartes visibles selon la largeur de l'écran
+      const containerWidth = slider.parentElement.offsetWidth;
+      const cardWidth = 320;
+      const gap = 25;
+      const visibleCards = Math.floor(containerWidth / (cardWidth + gap));
+      const maxSlide = Math.max(0, totalSlides - visibleCards);
+      
+      currentSlide += direction;
+      
+      if (currentSlide < 0) {
+        currentSlide = 0;
+      } else if (currentSlide > maxSlide) {
+        currentSlide = maxSlide;
+      }
+      
+      const translateX = currentSlide * (cardWidth + gap);
+      slider.style.transform = `translateX(-${translateX}px)`;
+    }
+  </script>
+</section>
+
+<section class="faq-section mt-5">
+  <div class="faq-container">
+    <h2 class="faq-title">Vous avez une question sur la téléconsultation ?</h2>
+    
+    <div class="custom-accordion" id="faqAccordion">
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse1')" aria-expanded="false" aria-controls="collapse1">
+            <span class="accordion-icon">›</span>
+            Est-il possible de recevoir une ordonnance ?
+          </button>
+        </div>
+        <div id="collapse1" class="accordion-collapse">
+          <div class="accordion-body">
+            Oui, absolument ! Nos médecins peuvent vous délivrer une ordonnance électronique lors de votre téléconsultation. Cette ordonnance est valable dans toutes les pharmacies de France et vous sera transmise directement par email ou via votre espace patient sécurisé.
+          </div>
+        </div>
+      </div>
+      
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse2')" aria-expanded="false" aria-controls="collapse2">
+            <span class="accordion-icon">›</span>
+            La téléconsultation est-elle remboursée par l'Assurance Maladie ?
+          </button>
+        </div>
+        <div id="collapse2" class="accordion-collapse">
+          <div class="accordion-body">
+            Oui, la téléconsultation est remboursée par l'Assurance Maladie dans les mêmes conditions qu'une consultation classique, soit 70% du tarif de base. Votre mutuelle peut prendre en charge le complément. Le tiers payant est également disponible.
+          </div>
+        </div>
+      </div>
+      
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse3')" aria-expanded="false" aria-controls="collapse3">
+            <span class="accordion-icon">›</span>
+            Quelles spécialités trouve-t-on sur MédecinDirect ?
+          </button>
+        </div>
+        <div id="collapse3" class="accordion-collapse">
+          <div class="accordion-body">
+            Nous proposons de nombreuses spécialités médicales : médecine générale, dermatologie, gynécologie, pédiatrie, psychiatrie, cardiologie, endocrinologie, rhumatologie, et bien d'autres. Consultez notre liste complète des spécialités disponibles sur votre espace patient.
+          </div>
+        </div>
+      </div>
+      
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse4')" aria-expanded="false" aria-controls="collapse4">
+            <span class="accordion-icon">›</span>
+            Dans quels cas la téléconsultation est-elle déconseillée ?
+          </button>
+        </div>
+        <div id="collapse4" class="accordion-collapse">
+          <div class="accordion-body">
+            La téléconsultation n'est pas recommandée en cas d'urgence vitale, pour les premiers soins d'urgence, certains examens physiques spécialisés nécessitant une présence physique, ou lorsque le médecin estime qu'un examen clinique en présentiel est indispensable.
+          </div>
+        </div>
+      </div>
+      
+      <div class="accordion-item">
+        <div class="accordion-header">
+          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse5')" aria-expanded="false" aria-controls="collapse5">
+            <span class="accordion-icon">›</span>
+            Faut-il forcément prendre rendez-vous ?
+          </button>
+        </div>
+        <div id="collapse5" class="accordion-collapse">
+          <div class="accordion-body">
+            Non, MédecinDirect propose aussi des consultations sans rendez-vous ! Vous pouvez accéder à un médecin disponible immédiatement pour les consultations d'urgence non vitales, tout en ayant également la possibilité de prendre rendez-vous à l'avance selon vos préférences.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleAccordion(targetId) {
+      const target = document.getElementById(targetId);
+      const button = target.previousElementSibling.querySelector('.accordion-button');
+      const icon = button.querySelector('.accordion-icon');
+      
+      // Fermer tous les autres accordéons
+      const allCollapses = document.querySelectorAll('.accordion-collapse');
+      const allButtons = document.querySelectorAll('.accordion-button');
+      const allIcons = document.querySelectorAll('.accordion-icon');
+      
+      allCollapses.forEach((collapse, index) => {
+        if (collapse.id !== targetId) {
+          collapse.classList.remove('show');
+          allButtons[index].classList.add('collapsed');
+          allButtons[index].setAttribute('aria-expanded', 'false');
+          allIcons[index].classList.remove('rotated');
+        }
+      });
+      
+      // Toggle l'accordéon cliqué
+      if (target.classList.contains('show')) {
+        target.classList.remove('show');
+        button.classList.add('collapsed');
+        button.setAttribute('aria-expanded', 'false');
+        icon.classList.remove('rotated');
+      } else {
+        target.classList.add('show');
+        button.classList.remove('collapsed');
+        button.setAttribute('aria-expanded', 'true');
+        icon.classList.add('rotated');
+      }
+    }
+  </script>
+</section>
+
+    <!-- CTA Section -->
+    <section class="py-5 cta-section">
+        <div class="container cta-container">
+            <div class="text-center div-cta">
+                <h2 class="display-5 fw-bold mb-4">Prêt à commencer ?</h2>
+                <p class="lead mb-4">Rejoignez des milliers de patients qui font confiance à MediConnect CI</p>
+                <a href="registre.html" class="btn btn-light btn-lg p-2">
+                    <i class="fas fa-rocket me-2"></i>Créer mon compte gratuitement
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white py-5">
+        <div class="container bg-primary-dark container-footer">
+            <div class="row g-4 row-footer">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="logo-icon me-2">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <h5 class="mb-0">MediConnect CI</h5>
+                    </div>
+                    <p class="text-muted">
+                        La première plateforme de consultation médicale en ligne en Côte d'Ivoire. 
+                        Connectez-vous facilement avec des professionnels de santé qualifiés.
+                    </p>
+                </div>
+                
+                <div class="col-lg-2">
+                    <h6 class="text-uppercase fw-bold">Liens rapides</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-muted text-decoration-none">Accueil</a></li>
+                        <li><a href="#services" class="text-muted text-decoration-none">Services</a></li>
+                        <li><a href="register.html" class="text-muted text-decoration-none">Inscription</a></li>
+                        <li><a href="contact.html" class="text-muted text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3">
+                    <h6 class="text-uppercase fw-bold">Support</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-muted text-decoration-none">Centre d'aide</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Politique de confidentialité</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Conditions d'utilisation</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3">
+                    <h6 class="text-uppercase fw-bold">Contact</h6>
+                    <ul class="list-unstyled text-muted">
+                        <li><i class="fas fa-envelope me-2"></i>support@mediconnect-ci.com</li>
+                        <li><i class="fas fa-phone me-2"></i>+225 XX XX XX XX XX</li>
+                        <li><i class="fas fa-map-marker-alt me-2"></i>Abidjan, Côte d'Ivoire</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="text-center">
+                <p class="text-muted mb-0">
+                    © 2025 MediConnect CI. Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>
