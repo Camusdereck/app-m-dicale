@@ -1,4 +1,4 @@
-// register.js - NOUVELLE VERSION ADAPTÉE À TON HTML
+// register.js - VERSION FINALE SIMPLIFIÉE AVEC DÉCLENCHEUR
 
 // On attend que toute la page soit chargée
 document.addEventListener('DOMContentLoaded', () => {
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /**
- * Fonction générale pour gérer l'inscription
+ * Fonction générale pour gérer l'inscription (version simplifiée)
  * @param {string} email 
  * @param {string} password 
  * @param {string} fullName 
@@ -48,36 +48,27 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 async function handleSignUp(email, password, fullName, isDoctor) {
     try {
-        // 1. Création de l'utilisateur dans Supabase Auth
-        // On utilise 'supabaseClient' qui vient de notre fichier de configuration
-        const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+        // Le déclencheur dans la base de données a besoin du nom complet (full_name).
+        // On le passe donc dans la section 'data' des options de signUp.
+        const { data, error } = await supabaseClient.auth.signUp({
             email: email,
-            password: password
+            password: password,
+            options: {
+                data: {
+                    full_name: fullName
+                    // NOTE: Pour gérer l'inscription des médecins, il faudra améliorer
+                    // notre déclencheur SQL. Concentrons-nous sur les patients pour l'instant.
+                }
+            }
         });
 
-        if (authError) {
-            throw authError; // Lance une erreur pour être attrapée par le bloc catch
-        }
-
-        // 2. Création du profil dans la bonne table (patients ou medecins)
-        const user = authData.user;
-        const tableName = isDoctor ? 'medecins' : 'patients';
-
-        const { error: profileError } = await supabaseClient
-            .from(tableName)
-            .insert([{
-                id: user.id,
-                full_name: fullName
-                // Tu pourras ajouter d'autres champs ici plus tard (téléphone, etc.)
-            }]);
-
-        if (profileError) {
-            throw profileError; // Lance une erreur
+        if (error) {
+            throw error;
         }
 
         alert("Inscription réussie ! Un email de confirmation a été envoyé.");
-        // Optionnel : rediriger vers la page de connexion après un court délai
-        // setTimeout(() => { window.location.href = "/connexion.html"; }, 2000);
+        // Le profil est créé automatiquement dans la base de données.
+        // Plus besoin de code .insert() ici !
 
     } catch (error) {
         console.error("Erreur détaillée :", error);

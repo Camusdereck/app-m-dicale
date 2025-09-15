@@ -12,12 +12,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="Css/style.css">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <!-- Header -->
     <nav class="navbar navbar-expand-lg fixed-top navbar">
-        <div class="container">
+        <div class="container nav-container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
                 <div class="logo-icon me-2">
                     <i class="fas fa-stethoscope"></i>
@@ -41,7 +43,7 @@
                         <a class="nav-link" href="#témoignages">Témoignages</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#témoignages">Nos assurances</a>
+                        <a class="nav-link" href="#Assurances">Nos assurances</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="contact.html">Contact</a>
@@ -49,7 +51,7 @@
                 </ul>
                 
                 <div class="btn-nav">
-                    <a href="login.html" class="nav-link me-2 btn-ins-2">Connexion</a>
+                    <a href="connexion.html" class="nav-link me-2 btn-ins-2">Connexion</a>
                     <a href="registre.html" class="btn btn-primary btn-ins-1">Inscription</a>
                 </div>
             </div>
@@ -60,7 +62,7 @@
     <section class="hero-section">
         <div class="container">
             <div class="row align-items-center min-vh-100 pt-5 ">
-                <div class="col-lg-6  ml-2">
+                <div class="col-lg-6 ">
                     <div class="hero-content">
                         <h1 class="display-4 fw-bold fs-1 mb-4">
                             Consultez un médecin<br> <span class="text-primary-dark">en Ligne</span> 24h/24
@@ -98,7 +100,7 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="hero-image">
-                        <img src="images/medium-shot-smiley-doctor-with-coat__1___1_-removebg-preview.png"Consultation médicale" class="img-fluid rounded-3 shadow-lg hero-img">
+                        <img src="images/medium-shot-smiley-doctor-with-coat__1___1_-removebg-preview.png"alt=Consultation médicale" class="img-fluid rounded-3 shadow-lg hero-img">
                     </div>
                 </div>
             </div>
@@ -107,7 +109,7 @@
 
     <!-- Services Section -->
     <section id="services" class="py-5">
-        <div class="container or-services">
+        <div class="container-or-services">
             <div class="text-center mb-5">
                 <h2 class="display-5 fw-bold">Nos Services</h2>
                 <p class="lead text-muted">Des solutions médicales complètes adaptées à vos besoins</p>
@@ -199,18 +201,44 @@
       </div> 
     </section>
 
+    <section id="Assurances">
+      <div class="container assurance-container">
+        <div class="row assurance-row">
+          <div class="col-lg-6 assurance-colo1">
+            <img src="images/image de tel pour EMSTE.gif" alt="" class=" img-fluid assurance-img">
+
+          </div>
+          <div class="col-lg-6 assurance-col2">
+            <span class="badge text-bg-info text-light border-1 rounded-4 mb-1">Tiers payant</span>
+            <h2>Vos consultations peuvent<br> être prises en charge par <br> l'Assurance Maladie</h2>
+            <p>Vous pouvez bénéficier du tiers payant si :</p>
+            <ul class="list-unstyled list">
+              <li><i class="fas fa-check text-success me-2"></i>Votre téléconsultation est réalisée en vidéo</li>
+              <li><i class="fas fa-check text-success me-2"></i>Votre médecin traitant n'est pas disponible ou vous n'en n'avez pas.</li>
+            </ul>
+            <a href="#registre.html" class="btn btn-lg me-3 btn-perso-assurance">
+                                <i class="bi bi-arrow-right me-2"></i>Je Consulte
+                            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
     <!-- Testimonials -->
 <section id="témoignages" class="testimonials-section">
   <div class="testimonials-container mb-5">
     <h2 class="testimonials-title mb-5">Vous en parlez mieux que nous</h2>
     
     <div class="testimonials-navigation">
-      <button class="nav-btn prev-btn" onclick="slideTestimonials(-1)" aria-label="Témoignage précédent">
+      <button class="nav-btn prev-btn" onclick="slideTestimonials(1)" aria-label="Témoignage précédent">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <button class="nav-btn next-btn" onclick="slideTestimonials(1)" aria-label="Témoignage suivant">
+      <button class="nav-btn next-btn" onclick="slideTestimonials(-1)" aria-label="Témoignage suivant">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -314,7 +342,7 @@
         </div>
         <div id="collapse1" class="accordion-collapse">
           <div class="accordion-body">
-            Oui, absolument ! Nos médecins peuvent vous délivrer une ordonnance électronique lors de votre téléconsultation. Cette ordonnance est valable dans toutes les pharmacies de France et vous sera transmise directement par email ou via votre espace patient sécurisé.
+            Oui, absolument ! Nos médecins peuvent vous délivrer une ordonnance électronique lors de votre téléconsultation. Cette ordonnance est valable dans toutes les pharmacies de Cote D'Ivoire et vous sera transmise directement par email ou via votre espace patient sécurisé.
           </div>
         </div>
       </div>
@@ -337,7 +365,7 @@
         <div class="accordion-header">
           <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse3')" aria-expanded="false" aria-controls="collapse3">
             <span class="accordion-icon">›</span>
-            Quelles spécialités trouve-t-on sur MédecinDirect ?
+            Quelles spécialités trouve-t-on sur EMSTE ?
           </button>
         </div>
         <div id="collapse3" class="accordion-collapse">
@@ -370,7 +398,7 @@
         </div>
         <div id="collapse5" class="accordion-collapse">
           <div class="accordion-body">
-            Non, MédecinDirect propose aussi des consultations sans rendez-vous ! Vous pouvez accéder à un médecin disponible immédiatement pour les consultations d'urgence non vitales, tout en ayant également la possibilité de prendre rendez-vous à l'avance selon vos préférences.
+            Non, EMSTE propose aussi des consultations sans rendez-vous ! Vous pouvez accéder à un médecin disponible immédiatement pour les consultations d'urgence non vitales, tout en ayant également la possibilité de prendre rendez-vous à l'avance selon vos préférences.
           </div>
         </div>
       </div>
@@ -417,8 +445,8 @@
     <section class="py-5 cta-section">
         <div class="container cta-container">
             <div class="text-center div-cta">
-                <h2 class="display-5 fw-bold mb-4">Prêt à commencer ?</h2>
-                <p class="lead mb-4">Rejoignez des milliers de patients qui font confiance à MediConnect CI</p>
+                <h2 class="display-5 fw-bold align-items-center justify-content-sm-center text-align-center">Prêt à commencer ?</h2>
+                <p class="lead align-items-center justify-content-center">Rejoignez des milliers de patients qui font confiance à MediConnect CI</p>
                 <a href="registre.html" class="btn btn-light btn-lg p-2">
                     <i class="fas fa-rocket me-2"></i>Créer mon compte gratuitement
                 </a>
@@ -485,7 +513,10 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Supabase Client -->
+    <script src="supabaseClient.js"></script>
     <!-- Custom JS -->
-    <script src="js/main.js"></script>
+    <script src="main.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
