@@ -6,199 +6,390 @@
     <title>EMSTE - Consultation Médicale en Ligne</title>
     <meta name="description" content="Consultations médicales en ligne en Côte d'Ivoire. Réservez facilement avec des médecins qualifiés via MediConnect CI.">
     
-    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="Css/style.css">
-    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg fixed-top navbar">
-        <div class="container nav-container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <div class="logo-icon me-2">
-                    <i class="fas fa-stethoscope"></i>
-                </div>
-                <span class="fw-bold text-dark">EMSTE</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto menu">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#témoignages">Témoignages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#Assurances">Nos assurances</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
-                    </li>
-                </ul>
-                
-                <div class="btn-nav">
-                    <a href="connexion.html" class="nav-link me-2 btn-ins-2">Connexion</a>
-                    <a href="registre.html" class="btn btn-primary btn-ins-1">Inscription</a>
-                </div>
+    <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid px-4 px-lg-5 mt-2">
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <div class="logo-icon me-2">
+                <i class="fas fa-stethoscope"></i>
             </div>
+            MediConnect CI
+        </a>
+        <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav menu" id="dynamic-nav-menu"></ul>
+            <div class="btn-nav ms-auto" id="dynamic-nav-buttons"></div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Hero Section -->
+
+<main>
     <section class="hero-section">
-        <div class="container">
-            <div class="row align-items-center min-vh-100 pt-5 ">
-                <div class="col-lg-6 ">
-                    <div class="hero-content">
-                        <h1 class="display-4 fw-bold fs-1 mb-4">
-                            Consultez un médecin<br> <span class="text-primary-dark">en Ligne</span> 24h/24
-                        </h1>
-                        <p class="lead text-dark fs-5 mb-4">
-                            Connectez-vous facilement avec des médecins qualifiés depuis chez vous. 
-                            Consultations sécurisées, paiements locaux et suivi médical personnalisé.
-                        </p>
-                        <div class="hero-buttons">
-                            <a href="#registre.html" class="btn btn-lg me-3 btn-perso1">
-                                <i class="fas fa-user-plus me-2"></i>Créer un compte
-                            </a>
-                            <a href="#services" class="btn btn-outline-primary btn-lg p-2">
-                                <i class="fas fa-info-circle me-2"></i>En savoir plus
-                            </a>
-                        </div>
-                        
-                        <div class="hero-stats mt-5">
-                            <div class="row text-center">
-                                <div class="col-4">
-                                    <h3 class=" fw-bold">20+</h3>
-                                    <p class="">Médecins</p>
-                                </div>
-                                <div class="col-4">
-                                    <h3 class=" fw-bold">10K+</h3>
-                                    <p class="">Consultations</p>
-                                </div>
-                                <div class="col-4">
-                                    <h3 class=" fw-bold">24h/7</h3>
-                                    <p class="">Support</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="hero-image">
-                        <img src="images/medium-shot-smiley-doctor-with-coat__1___1_-removebg-preview.png"alt=Consultation médicale" class="img-fluid rounded-3 shadow-lg hero-img">
-                    </div>
-                </div>
-            </div>
+      <div class="social-proof-container">
+        <div class="rating-section">
+          <div class="starts">
+            <span class="start filled">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+              </span>
+              <span class="start filled">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </span>
+                <span class="start filled">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </span>
+                <span class="start filled">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </span>
+                <span class="start empty">
+                    <svg fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                </span>
+          </div>
+          <div class="rating-text">
+            <span class="rating-score">4.5/5 sur les stores</span>
+          </div>
         </div>
-    </section>
 
-    <!-- Services Section -->
-    <section id="services" class="py-5">
-        <div class="container-or-services">
-            <div class="text-center mb-5">
-                <h2 class="display-5 fw-bold">Nos Services</h2>
-                <p class="lead text-muted">Des solutions médicales complètes adaptées à vos besoins</p>
-            </div>
-            
-            <div class="row g-4 nos-services">
-                <div class="col-md-3">
-                    <div class="service-card h-100 p-2">
-                        <div class="service-icon">
-                            <i class="fas fa-video text-white"></i>
-                        </div>
-                        <h4>Consultation Vidéo</h4>
-                        <ul class="list-unstyled list">
-                            <li><i class="fas fa-check text-success me-2"></i>Connexion HD sécurisée</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Enregistrement automatique</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Partage de documents</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <div class="service-card h-100 p-2">
-                        <div class="service-icon">
-                            <i class="fas fa-file-medical text-white"></i>
-                        </div>
-                        <h4>Dossier Médical</h4>
-                        <ul class="list-unstyled list">
-                            <li><i class="fas fa-check text-success me-2"></i>Historique complet</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Prescriptions électroniques</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Résultats d'analyses</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <div class="service-card h-100 p-2">
-                        <div class="service-icon">
-                            <i class="fas fa-calendar-check text-white"></i>
-                        </div>
-                        <h4>Prise de RDV</h4>
-                        <ul class="list-unstyled list">
-                            <li><i class="fas fa-check text-success me-2"></i>Réservation en ligne</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Rappels automatiques</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Reprogrammation facile</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Process -->
-    <section class="py-5 section-why ">
-        <div class="container why-section">
-        <div class="header">
-            <h1 class="title">Comment ca <span class="simple">Marche?</span></h1>
-            <p class="subtitle mb-5">Un process simple et rapide</p>
+        <div class="satisfaction-section">
+          <span class="satisfaction-percentage">95%</span>
+          <span class="satisfaction-label">des patients satisfaits</span>
         </div>
         
-        <div class="timeline">
-            <div class="timeline-step">
-                <div class="step-circle"></div>
-                <div class="step-content mt-4">
-                    <div class="step-period">Étape1</div>
-                    <div class="step-title">Créez votre compte</div>
-                </div>
+        <div class="certification-section">
+          <div class="flag-icon">
+                <svg viewBox="0 0 3 2">
+                    <rect width="1" height="2" fill="#FF8200"/>
+                    <rect x="1" width="1" height="2" fill="#FFFFFF"/>
+                    <rect x="2" width="1" height="2" fill="#009A44"/>
+                </svg>
+            </div>
+            <span class="certification-text">Agréé par le Ministère de la Santé</span>
+        </div>
+      </div>
+    
+      <div class="hero-content">
+          <h1 class="display-4 fw-bold fs-1 mb-4">
+              Consultez un médecin<br> <span class="text-primary-dark">en Ligne</span> 24h/24
+          </h1>
+          <p class="lead">
+              Connectez-vous facilement avec des médecins qualifiés depuis chez vous. 
+              Consultations sécurisées, paiements locaux et suivi médical personnalisé.
+          </p>
+          <div class="hero-buttons">
+              <a href="#registre.html" class="btn btn-lg me-3 btn-perso1">
+                  <i class="fas fa-user-plus me-2"></i>Créer un compte
+              </a>
+              <a href="#services" class="btn btn-outline-primary btn-lg p-2 btn-perso2">
+                  <i class="fas fa-info-circle me-2"></i>En savoir plus
+              </a>
+          </div>
+
+          <div class="hero-img">
+            <img src="images/black-pediatrician-talking-via-video-call-mother-who-is-giving-her-daughter-inhaling-therapy-home (1).jpg" alt="Téléconsultation" class="image-hero img-fluid rounded">
+             <a href="#" class="badge1">
+               <i class="bi bi-apple"></i> Télécharger sur App Store
+             </a>
+             <a href="#" class="badge2">
+              <i class="bi bi-google-play"></i>Télécharger sur Play Store
+            </a>
+          </div>
+      </div>                         
+    </section>
+ 
+    <section class="nos-services">
+      <div class="service-head">
+        <h2 class="services-h2">Nos services</h2>
+        <p class="services-p">
+          Des solutions médicales complètes adaptées à vos besoins
+        </p>
+      </div>
+
+      <div class="service-grid">
+        <div class="service-item service-items1">
+          <div class="serv-head">
+          <h3><i class="fas fa-video text-white"></i>   Consultation Vidéo</h3>
+          </div>
+          <ul class="list-unstyled list">
+            <li><i class="fas fa-check text-white me-2"></i>Connexion HD sécurisée</li>
+            <li><i class="fas fa-check text-white me-2"></i>Enregistrement automatique</li>
+            <li><i class="fas fa-check text-white me-2"></i>Partage de documents</li>
+          </ul>
+        </div>
+
+        <div class="service-item service-items2">
+          <div class="serv-head">
+          <h3><i class="fas fa-file-medical text-white"></i>   Dossier Médical en ligne</h3>
+          </div>
+          <ul class="list-unstyled list">
+            <li><i class="fas fa-check text-white me-2"></i>Historique complet</li>
+            <li><i class="fas fa-check text-white me-2"></i>Prescriptions électroniques</li>
+            <li><i class="fas fa-check text-white me-2"></i>Résultats d'analyses</li>
+          </ul>
+        </div>
+
+        <div class="service-item service-items3">
+          <div class="serv-head">
+          <h3><i class="fas fa-calendar-check text-white"></i>   Prise de rendez-vous</h3>
+          </div>
+          <ul class="list-unstyled list">
+            <li><i class="fas fa-check text-white me-2"></i>Réservation en ligne</li>
+            <li><i class="fas fa-check text-white me-2"></i>Rappels automatiques</li>
+            <li><i class="fas fa-check text-white me-2"></i>Reprogrammation facile</li>
+          </ul>
+        </div>
+
+        <div class="service-item service-items4">
+          <div class="serv-head">
+          <h3><i class="bi bi-chat-heart-fill"></i>  messagerie médicale</h3>
+          </div>
+          <ul class="list-unstyled list">
+            <li><i class="fas fa-check text-white me-2"></i>Sans rendez-vous 24h/24</li>
+            <li><i class="fas fa-check text-white me-2"></i>Réponse du moyenne en 1h </li>
+            <li><i class="fas fa-check text-white me-2"></i>Prise en charge possible par votre mutuelle</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-5 section-why">
+        <div class="container why-section">
+            <div class="header">
+                <h1 class="title">Comment ca <span class="simple">Marche?</span></h1>
+                <p class="subtitle mb-5">Un process simple et rapide</p>
             </div>
             
-            <div class="timeline-step">
-                <div class="step-circle"></div>
-                <div class="step-content mt-4">
-                    <div class="step-period">Étape2</div>
-                    <div class="step-title">Choisissez votre mode</div>
+            <div class="timeline">
+                <div class="timeline-step">
+                    <div class="step-circle"></div>
+                    <div class="step-content mt-4">
+                        <div class="step-period">Étape1</div>
+                        <div class="step-title">Créez votre compte</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="step-circle"></div>
+                    <div class="step-content mt-4">
+                        <div class="step-period">Étape2</div>
+                        <div class="step-title">Choisissez votre mode</div>
+                    </div>
+                </div>
+                
+                <div class="timeline-step">
+                    <div class="step-circle"></div>
+                    <div class="step-content mt-4">
+                        <div class="step-period">Étape3</div>
+                        <div class="step-title">Payez & consultez</div>
+                    </div>
                 </div>
             </div>
+            <div class="btn-ct">
+                <a href="#registre.html" class="btn btn-lg me-3 btn-perso-ct1">
+                    <i class="bi bi-caret-right-fill"></i>Démarrer maintenant
+                </a> 
+            </div> 
+        </div>
+    </section>
+
+    <section class="tabs-container">
+      <input type="radio" name="tabs" id="tab1" checked>
+      <input type="radio" name="tabs" id="tab2">
+      <input type="radio" name="tabs" id="tab3">
+      
+      <div class="tabs-buttons">
+       <label for="tab1" class="tab-boutton">🩺 Nos spécialités</label>
+       <label for="tab2" class="tab-boutton">🌿 Pourquoi nous choisir</label>
+       <label for="tab3" class="tab-boutton">💚 Notre engagement</label>
+      </div>
+
+      <div class="tabs-content">
+        <div class="tab-panel nos-spécialités" id="content1">
+          <div class="nos-spécialités1">
+              <h3 class="badg">✨Un véritable centre de centé en ligne</h3>
             
-            <div class="timeline-step">
-                <div class="step-circle"></div>
-                <div class="step-content mt-4">
-                    <div class="step-period">Étape3</div>
-                    <div class="step-title">Payez & consultez</div>
-                </div>
+            <h2>Nos spécialités pour optimiser votre bien etre</h2>
+            <p>
+              Notre objectif : rendre accessible une expertise médicale de qualité, où que vous soyez.
+              Nous réunissons une équipe de médecins qualifiés dans plusieurs domaines pour offrir un suivi complet et personnalisé à chaque patient :
+            </p>
+            <div class="spaciélités-taux">
+              <div class="rating2">
+                  <div class="starts2">
+                    <span class="start2 filled"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+                    <span class="start2 filled"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+                    <span class="start2 filled"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+                    <span class="start2 filled"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+                    <span class="start2 empty"><svg fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg></span>
+                  </div>
+                  <div class="rating-text2">
+                    <span class="rating-score2">4.5/5 sur les stores</span>
+                  </div>
+              </div>
+              <div class="satisfaction2">
+                <span class="satisfaction-percentage2">95%</span>
+                <span class="satisfaction-label2">des patients satisfaits</span>
+              </div>
             </div>
-    </div>
-    <div class="btn-ct">
-            <a href="#registre.html" class="btn btn-lg me-3 btn-perso-ct1">
-        <i class="bi bi-caret-right-fill"></i>Démarrer maintenant
-      </a> 
-      </div> 
+            <a href="registre.html" class=" btn-per1">
+                <i class="bi bi-box-arrow-up-right"></i> Créer un compte
+            </a>
+          </div>
+
+          <div class="nos-spécialités2">
+              <h3 class="badge-lien badge-lien1">🤍​​       Médecine générale</h3>
+              <h3 class="badge-lien badge-lien2">🤍​    Pédiatrie</h3>
+              <h3 class="badge-lien badge-lien3">🤍​​       Gynécologie & santé de la femme</h3>
+              <h3 class="badge-lien badge-lien4">🤍​      Dermatologie</h3>
+              <h3 class="badge-lien badge-lien5">🤍​     Psychologie & bien-être mental</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Ophtalmologie</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ ORL</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Cardiologie</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Diabétologie & endocrinologie</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Bucco-Dentaires</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Nutrition & diététique</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Rhumatologie</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Urologie</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Médecine du travail</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Gastro-entérologie</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Médecine interne</h3>
+              <h3 class="badge-lien badge-lien6">🤍​     ​ Infectiologie</h3>
+          </div>
+        </div>
+
+        <div class="tab-panel pourquoi" id="content2">
+          <div class="pourquoi-img">
+            <img src="images/african-american-nurse-using-digital-tablet-treatment-black-medical-assistant-looking-screen-device-while-wearing-uniform-stethoscope-doctors-office-healthcare (1).jpg" alt="" class="img-pourquoi">
+          </div>
+
+          <div class="pourquoi2">
+            <h2>Votre santé, notre priorité — accessible, humaine et connectée.</h2>
+            <p>Choisir notre plateforme, c’est opter pour une nouvelle manière de consulter un médecin : simple, rapide et digne de confiance.</p>
+            <ul>
+              <li>Accession : obtenez une consultation où que vous soyez, à tout moment.</li>
+              <li>Médecins qualifiés et certifiés : chaque spécialiste est vérifié par notre équipe médicale.</li>
+              <li>Tarifs transparents et abordables : pas de surprise, la santé devient accessible à tous.</li>
+            </ul>
+            <h3 class="badg">📌 Voici ce qui nous différencie des autres :</h3>
+            <div class="pourquoi2-f">
+              <div class="pourquoi2-col">
+                <div class="pimg">
+                  <img src="images/undraw_online-meeting_qe61.svg" alt="" class="imgp">
+                </div>
+                <div class="pcol">
+                  <h3>💬 Consultations via WhatsApp ou Zoom</h3>
+                  <p>
+                    Nos consultations sont conçues pour être simples et pratiques, selon votre préférence.
+                  </p>
+                </div>
+              </div>
+
+              <div class="pourquoi2-col">
+                <div class="pimg">
+                  <img src="images/undraw_real-time-collaboration_bchs.svg" alt="" class="imgp">
+                </div>
+                <div class="pcol">
+                  <h3>🤝 Support client réactif</h3>
+                  <p>
+                    Notre équipe d’assistance est disponible pour vous aider à chaque étape. Un simple message suffit pour obtenir de l’aide.
+                  </p>
+                </div>
+              </div>
+
+              <div class="pourquoi2-col">
+                <div class="pimg">
+                  <img src="images/undraw_online-meetings_zutp.svg" alt="" class="imgp">
+                </div>
+                <div class="pcol">
+                  <h3>💻 Suivi digitalisé</h3>
+                  <p>Vos antécédents et prescriptions toujours accessibles en ligne</p>
+                </div>
+              </div>
+              <a href="registre.html" class="btn btn-lg me-3 w-100 btn-perso1">
+                    <i class="fas fa-user-plus me-2"></i>Créer un compte
+              </a>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-panel engagement" id="content3">
+          <div class="engangement1">
+            <p>
+              Notre mission est de <span>rendre les soins médicaux accessibles à tous,</span> en brisant les barrières de distance, de coût et de temps.
+            </p>
+            <button class="eng-b">
+                Nous nous engageons à :
+              </button>
+
+              <div class="badges-e">
+              <h3 class="badge-e">
+                <i class="bi bi-check-circle-fill"></i>
+                 Offrir des consultations médicales de qualité.
+              </h3>
+              <h3 class="badge-e">
+                <i class="bi bi-check-circle-fill"></i>
+                 Garantir la confidentialité absolue des données patients.
+              </h3>
+              <h3 class="badge-e">
+                <i class="bi bi-check-circle-fill"></i>
+                 Assurer la sécurité totale des échanges et paiements.
+              </h3>
+              <h3 class="badge-e">
+                <i class="bi bi-check-circle-fill"></i>
+                 Promouvoir une santé digitale responsable et éthique.
+              </h3>
+              <h3 class="badge-e">
+                <i class="bi bi-check-circle-fill"></i>
+                 Encourager la prévention et l’éducation sanitaire.
+              </h3>
+              <h3 class="badge-e">
+                <i class="bi bi-check-circle-fill"></i>
+                 Simplifier le parcours de soin grâce à la technologie.
+              </h3>
+              <h3 class="badge-e">
+                <i class="bi bi-check-circle-fill"></i>
+                 Former continuellement nos équipes médicales.
+              </h3>
+              <h3 class="badge-e">
+                <i class="bi bi-check-circle-fill"></i>
+                 Mettre l’innovation au service du bien-être des patients.
+              </h3>
+              
+              <p>Parce que votre santé mérite le meilleur, partout, à tout moment.</p>
+              <div class=" pourtel ">
+              <img src="images/undraw_sentiment-analysis_rke9.svg" alt="">
+              </div>
+              </div>
+              <a href="registre.html" class="btn btn-lg me-3 w-80 btn-perso1">
+                    <i class="fas fa-user-plus me-2"></i>Créer un compte
+              </a>
+          </div>
+
+          <div class="engagement2">
+              <img src="images/undraw_sentiment-analysis_rke9.svg" alt="">
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="Assurances">
@@ -206,257 +397,237 @@
         <div class="row assurance-row">
           <div class="col-lg-6 assurance-colo1">
             <img src="images/image de tel pour EMSTE.gif" alt="" class=" img-fluid assurance-img">
-
           </div>
           <div class="col-lg-6 assurance-col2">
             <span class="badge text-bg-info text-light border-1 rounded-4 mb-1">Tiers payant</span>
             <h2>Vos consultations peuvent<br> être prises en charge par <br> l'Assurance Maladie</h2>
             <p>Vous pouvez bénéficier du tiers payant si :</p>
             <ul class="list-unstyled list">
-              <li><i class="fas fa-check text-success me-2"></i>Votre téléconsultation est réalisée en vidéo</li>
-              <li><i class="fas fa-check text-success me-2"></i>Votre médecin traitant n'est pas disponible ou vous n'en n'avez pas.</li>
+              <li><i class="fas fa-check text-success me-2"></i><h4 class="assur-h4">Votre téléconsultation est réalisée en vidéo</h4></li>
+              <li><i class="fas fa-check text-success me-2"></i><h4 class="assur-h4">Votre médecin traitant n'est pas disponible ou vous n'en n'avez pas.</h4></li>
             </ul>
-            <a href="#registre.html" class="btn btn-lg me-3 btn-perso-assurance">
-                                <i class="bi bi-arrow-right me-2"></i>Je Consulte
-                            </a>
-
+            <a href="registre.html" class="btn btn-lg me-3 btn-perso-assurance">
+                 <i class="bi bi-arrow-right me-2"></i>Je Consulte
+            </a>
           </div>
-
         </div>
-
       </div>
     </section>
 
-    <!-- Testimonials -->
-<section id="témoignages" class="testimonials-section">
-  <div class="testimonials-container mb-5">
-    <h2 class="testimonials-title mb-5">Vous en parlez mieux que nous</h2>
-    
-    <div class="testimonials-navigation">
-      <button class="nav-btn prev-btn" onclick="slideTestimonials(1)" aria-label="Témoignage précédent">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <button class="nav-btn next-btn" onclick="slideTestimonials(-1)" aria-label="Témoignage suivant">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-
-    <div class="testimonials-wrapper">
-      <div class="testimonials-slider" id="testimonials-slider">
-        <div class="testimonial-card p-3">
-          <div class="stars">
-            <span>★★★★★</span>
-          </div>
-          <h3 class="testimonial-name">Laetitia</h3>
-          <p class="testimonial-text">
-            Très pratique, rapide et sérieux. Cela permet une confirmation de diagnostic pour maladie type saisonnière [...] sans avoir à attendre en salle d'attente malade ou ne pas avoir de rendez-vous le jour même. Un questionnaire Medicale complet est à compléter avant d'avoir le retour du médecin.
-          </p>
-        </div>
-
-        <div class="testimonial-card p-3">
-          <div class="stars">
-            <span>★★★★★</span>
-          </div>
-          <h3 class="testimonial-name">Mireille</h3>
-          <p class="testimonial-text">
-            Le médecin répond rapidement. Dans mon cas il m'a dirigé vers un spécialiste, qui a pu suite à plusieurs échanges me proposer des examens. Je suis entièrement satisfaite et surtout soignée.
-          </p>
-        </div>
-
-        <div class="testimonial-card p-3">
-          <div class="stars">
-            <span>★★★★★</span>
-          </div>
-          <h3 class="testimonial-name">Marine</h3>
-          <p class="testimonial-text">
-            Alors que j'avais une affection à évolution très rapide, je ne trouvais pas de dermatologue qui pouvais me prendre dans un délai inférieur à 3 mois et dans un rayon de 100 km autour de chez moi. Médecin direct m'a permis d'avoir une consultation en seulement 2 jours. Sans cela j'aurais dû me rendre aux urgences. La prise en charge est...
-          </p>
-        </div>
-
-        <div class="testimonial-card p-3">
-          <div class="stars">
-            <span>★★★★★</span>
-          </div>
-          <h3 class="testimonial-name">Laurent</h3>
-          <p class="testimonial-text">
-            Prise de contact avec un médecin ne connaissant pas ma fille qui avait mal à la gorge. Prise en charge rapide en moins d'1h, diagnostic et ordonnance pour test angine et antibio en cas de contact avec le médecin en moins d'une heure. Résultat le soir à 18h.
-          </p>
-        </div>
-
-        <div class="testimonial-card p-3">
-          <div class="stars">
-            <span>★★★★★</span>
-          </div>
-          <h3 class="testimonial-name">Sophie</h3>
-          <p class="testimonial-text">
-            Service très efficace et professionnel. J'ai pu obtenir un diagnostic précis en quelques heures seulement. Le médecin a été très à l'écoute et m'a donné des conseils adaptés à ma situation. Je recommande vivement cette solution moderne de téléconsultation.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    let currentSlide = 0;
-    const totalSlides = 5;
-    
-    function slideTestimonials(direction) {
-      const slider = document.getElementById('testimonials-slider');
-      
-      // Calculer le nombre de cartes visibles selon la largeur de l'écran
-      const containerWidth = slider.parentElement.offsetWidth;
-      const cardWidth = 320;
-      const gap = 25;
-      const visibleCards = Math.floor(containerWidth / (cardWidth + gap));
-      const maxSlide = Math.max(0, totalSlides - visibleCards);
-      
-      currentSlide += direction;
-      
-      if (currentSlide < 0) {
-        currentSlide = 0;
-      } else if (currentSlide > maxSlide) {
-        currentSlide = maxSlide;
-      }
-      
-      const translateX = currentSlide * (cardWidth + gap);
-      slider.style.transform = `translateX(-${translateX}px)`;
-    }
-  </script>
-</section>
-
-<section class="faq-section mt-5">
-  <div class="faq-container">
-    <h2 class="faq-title">Vous avez une question sur la téléconsultation ?</h2>
-    
-    <div class="custom-accordion" id="faqAccordion">
-      <div class="accordion-item">
-        <div class="accordion-header">
-          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse1')" aria-expanded="false" aria-controls="collapse1">
-            <span class="accordion-icon">›</span>
-            Est-il possible de recevoir une ordonnance ?
+    <section id="témoignages" class="testimonials-section">
+      <div class="testimonials-container mb-5">
+        <h2 class="testimonials-title mb-5">Vous en parlez mieux que nous</h2>
+        
+        <div class="testimonials-navigation">
+          <button class="nav-btn prev-btn" onclick="slideTestimonials(1)" aria-label="Témoignage précédent">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="nav-btn next-btn" onclick="slideTestimonials(-1)" aria-label="Témoignage suivant">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </button>
         </div>
-        <div id="collapse1" class="accordion-collapse">
-          <div class="accordion-body">
-            Oui, absolument ! Nos médecins peuvent vous délivrer une ordonnance électronique lors de votre téléconsultation. Cette ordonnance est valable dans toutes les pharmacies de Cote D'Ivoire et vous sera transmise directement par email ou via votre espace patient sécurisé.
-          </div>
-        </div>
-      </div>
-      
-      <div class="accordion-item">
-        <div class="accordion-header">
-          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse2')" aria-expanded="false" aria-controls="collapse2">
-            <span class="accordion-icon">›</span>
-            La téléconsultation est-elle remboursée par l'Assurance Maladie ?
-          </button>
-        </div>
-        <div id="collapse2" class="accordion-collapse">
-          <div class="accordion-body">
-            Oui, la téléconsultation est remboursée par l'Assurance Maladie dans les mêmes conditions qu'une consultation classique, soit 70% du tarif de base. Votre mutuelle peut prendre en charge le complément. Le tiers payant est également disponible.
-          </div>
-        </div>
-      </div>
-      
-      <div class="accordion-item">
-        <div class="accordion-header">
-          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse3')" aria-expanded="false" aria-controls="collapse3">
-            <span class="accordion-icon">›</span>
-            Quelles spécialités trouve-t-on sur EMSTE ?
-          </button>
-        </div>
-        <div id="collapse3" class="accordion-collapse">
-          <div class="accordion-body">
-            Nous proposons de nombreuses spécialités médicales : médecine générale, dermatologie, gynécologie, pédiatrie, psychiatrie, cardiologie, endocrinologie, rhumatologie, et bien d'autres. Consultez notre liste complète des spécialités disponibles sur votre espace patient.
-          </div>
-        </div>
-      </div>
-      
-      <div class="accordion-item">
-        <div class="accordion-header">
-          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse4')" aria-expanded="false" aria-controls="collapse4">
-            <span class="accordion-icon">›</span>
-            Dans quels cas la téléconsultation est-elle déconseillée ?
-          </button>
-        </div>
-        <div id="collapse4" class="accordion-collapse">
-          <div class="accordion-body">
-            La téléconsultation n'est pas recommandée en cas d'urgence vitale, pour les premiers soins d'urgence, certains examens physiques spécialisés nécessitant une présence physique, ou lorsque le médecin estime qu'un examen clinique en présentiel est indispensable.
-          </div>
-        </div>
-      </div>
-      
-      <div class="accordion-item">
-        <div class="accordion-header">
-          <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse5')" aria-expanded="false" aria-controls="collapse5">
-            <span class="accordion-icon">›</span>
-            Faut-il forcément prendre rendez-vous ?
-          </button>
-        </div>
-        <div id="collapse5" class="accordion-collapse">
-          <div class="accordion-body">
-            Non, EMSTE propose aussi des consultations sans rendez-vous ! Vous pouvez accéder à un médecin disponible immédiatement pour les consultations d'urgence non vitales, tout en ayant également la possibilité de prendre rendez-vous à l'avance selon vos préférences.
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <script>
-    function toggleAccordion(targetId) {
-      const target = document.getElementById(targetId);
-      const button = target.previousElementSibling.querySelector('.accordion-button');
-      const icon = button.querySelector('.accordion-icon');
-      
-      // Fermer tous les autres accordéons
-      const allCollapses = document.querySelectorAll('.accordion-collapse');
-      const allButtons = document.querySelectorAll('.accordion-button');
-      const allIcons = document.querySelectorAll('.accordion-icon');
-      
-      allCollapses.forEach((collapse, index) => {
-        if (collapse.id !== targetId) {
-          collapse.classList.remove('show');
-          allButtons[index].classList.add('collapsed');
-          allButtons[index].setAttribute('aria-expanded', 'false');
-          allIcons[index].classList.remove('rotated');
+        <div class="testimonials-wrapper">
+          <div class="testimonials-slider" id="testimonials-slider">
+            <div class="testimonial-card p-3">
+              <div class="stars"><span>★★★★★</span></div>
+              <h3 class="testimonial-name">Laetitia</h3>
+              <p class="testimonial-text">
+                Très pratique, rapide et sérieux. Cela permet une confirmation de diagnostic pour maladie type saisonnière [...] sans avoir à attendre en salle d'attente malade ou ne pas avoir de rendez-vous le jour même. Un questionnaire Medicale complet est à compléter avant d'avoir le retour du médecin.
+              </p>
+            </div>
+
+            <div class="testimonial-card p-3">
+              <div class="stars"><span>★★★★★</span></div>
+              <h3 class="testimonial-name">Mireille</h3>
+              <p class="testimonial-text">
+                Le médecin répond rapidement. Dans mon cas il m'a dirigé vers un spécialiste, qui a pu suite à plusieurs échanges me proposer des examens. Je suis entièrement satisfaite et surtout soignée.
+              </p>
+            </div>
+
+            <div class="testimonial-card p-3">
+              <div class="stars"><span>★★★★★</span></div>
+              <h3 class="testimonial-name">Marine</h3>
+              <p class="testimonial-text">
+                Alors que j'avais une affection à évolution très rapide, je ne trouvais pas de dermatologue qui pouvais me prendre dans un délai inférieur à 3 mois et dans un rayon de 100 km autour de chez moi. Médecin direct m'a permis d'avoir une consultation en seulement 2 jours. Sans cela j'aurais dû me rendre aux urgences. La prise en charge est...
+              </p>
+            </div>
+
+            <div class="testimonial-card p-3">
+              <div class="stars"><span>★★★★★</span></div>
+              <h3 class="testimonial-name">Laurent</h3>
+              <p class="testimonial-text">
+                Prise de contact avec un médecin ne connaissant pas ma fille qui avait mal à la gorge. Prise en charge rapide en moins d'1h, diagnostic et ordonnance pour test angine et antibio en cas de contact avec le médecin en moins d'une heure. Résultat le soir à 18h.
+              </p>
+            </div>
+
+            <div class="testimonial-card p-3">
+              <div class="stars"><span>★★★★★</span></div>
+              <h3 class="testimonial-name">Sophie</h3>
+              <p class="testimonial-text">
+                Service très efficace et professionnel. J'ai pu obtenir un diagnostic précis en quelques heures seulement. Le médecin a été très à l'écoute et m'a donné des conseils adaptés à ma situation. Je recommande vivement cette solution moderne de téléconsultation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        let currentSlide = 0;
+        const totalSlides = 5;
+        
+        function slideTestimonials(direction) {
+          const slider = document.getElementById('testimonials-slider');
+          
+          const containerWidth = slider.parentElement.offsetWidth;
+          const cardWidth = 320;
+          const gap = 25;
+          const visibleCards = Math.floor(containerWidth / (cardWidth + gap));
+          const maxSlide = Math.max(0, totalSlides - visibleCards);
+          
+          currentSlide += direction;
+          
+          if (currentSlide < 0) {
+            currentSlide = 0;
+          } else if (currentSlide > maxSlide) {
+            currentSlide = maxSlide;
+          }
+          
+          const translateX = currentSlide * (cardWidth + gap);
+          slider.style.transform = `translateX(-${translateX}px)`;
         }
-      });
-      
-      // Toggle l'accordéon cliqué
-      if (target.classList.contains('show')) {
-        target.classList.remove('show');
-        button.classList.add('collapsed');
-        button.setAttribute('aria-expanded', 'false');
-        icon.classList.remove('rotated');
-      } else {
-        target.classList.add('show');
-        button.classList.remove('collapsed');
-        button.setAttribute('aria-expanded', 'true');
-        icon.classList.add('rotated');
-      }
-    }
-  </script>
-</section>
+      </script>
+    </section>
 
-    <!-- CTA Section -->
-    <section class="py-5 cta-section">
+    <section class="faq-section mt-5">
+      <div class="faq-container">
+        <h2 class="faq-title">Vous avez une question sur la téléconsultation ?</h2>
+        
+        <div class="custom-accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse1')" aria-expanded="false" aria-controls="collapse1">
+                <span class="accordion-icon">›</span>
+                Est-il possible de recevoir une ordonnance ?
+              </button>
+            </div>
+            <div id="collapse1" class="accordion-collapse">
+              <div class="accordion-body">
+                Oui, absolument ! Nos médecins peuvent vous délivrer une ordonnance électronique lors de votre téléconsultation. Cette ordonnance est valable dans toutes les pharmacies de Cote D'Ivoire et vous sera transmise directement par email ou via votre espace patient sécurisé.
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse2')" aria-expanded="false" aria-controls="collapse2">
+                <span class="accordion-icon">›</span>
+                La téléconsultation est-elle remboursée par l'Assurance Maladie ?
+              </button>
+            </div>
+            <div id="collapse2" class="accordion-collapse">
+              <div class="accordion-body">
+                Oui, la téléconsultation est remboursée par l'Assurance Maladie dans les mêmes conditions qu'une consultation classique, soit 70% du tarif de base. Votre mutuelle peut prendre en charge le complément. Le tiers payant est également disponible.
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse3')" aria-expanded="false" aria-controls="collapse3">
+                <span class="accordion-icon">›</span>
+                Quelles spécialités trouve-t-on sur EMSTE ?
+              </button>
+            </div>
+            <div id="collapse3" class="accordion-collapse">
+              <div class="accordion-body">
+                Nous proposons de nombreuses spécialités médicales : médecine générale, dermatologie, gynécologie, pédiatrie, psychiatrie, cardiologie, endocrinologie, rhumatologie, et bien d'autres. Consultez notre liste complète des spécialités disponibles sur votre espace patient.
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse4')" aria-expanded="false" aria-controls="collapse4">
+                <span class="accordion-icon">›</span>
+                Dans quels cas la téléconsultation est-elle déconseillée ?
+              </button>
+            </div>
+            <div id="collapse4" class="accordion-collapse">
+              <div class="accordion-body">
+                La téléconsultation n'est pas recommandée en cas d'urgence vitale, pour les premiers soins d'urgence, certains examens physiques spécialisés nécessitant une présence physique, ou lorsque le médecin estime qu'un examen clinique en présentiel est indispensable.
+              </div>
+            </div>
+          </div>
+          
+          <div class="accordion-item">
+            <div class="accordion-header">
+              <button class="accordion-button collapsed" type="button" onclick="toggleAccordion('collapse5')" aria-expanded="false" aria-controls="collapse5">
+                <span class="accordion-icon">›</span>
+                Faut-il forcément prendre rendez-vous ?
+              </button>
+            </div>
+            <div id="collapse5" class="accordion-collapse">
+              <div class="accordion-body">
+                Non, EMSTE propose aussi des consultations sans rendez-vous ! Vous pouvez accéder à un médecin disponible immédiatement pour les consultations d'urgence non vitales, tout en ayant également la possibilité de prendre rendez-vous à l'avance selon vos préférences.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        function toggleAccordion(targetId) {
+          const target = document.getElementById(targetId);
+          const button = target.previousElementSibling.querySelector('.accordion-button');
+          const icon = button.querySelector('.accordion-icon');
+          
+          const allCollapses = document.querySelectorAll('.accordion-collapse');
+          const allButtons = document.querySelectorAll('.accordion-button');
+          const allIcons = document.querySelectorAll('.accordion-icon');
+          
+          allCollapses.forEach((collapse, index) => {
+            if (collapse.id !== targetId) {
+              collapse.classList.remove('show');
+              allButtons[index].classList.add('collapsed');
+              allButtons[index].setAttribute('aria-expanded', 'false');
+              allIcons[index].classList.remove('rotated');
+            }
+          });
+          
+          if (target.classList.contains('show')) {
+            target.classList.remove('show');
+            button.classList.add('collapsed');
+            button.setAttribute('aria-expanded', 'false');
+            icon.classList.remove('rotated');
+          } else {
+            target.classList.add('show');
+            button.classList.remove('collapsed');
+            button.setAttribute('aria-expanded', 'true');
+            icon.classList.add('rotated');
+          }
+        }
+      </script>
+    </section>
+
+    <section class="cta-section">
         <div class="container cta-container">
-            <div class="text-center div-cta">
-                <h2 class="display-5 fw-bold align-items-center justify-content-sm-center text-align-center">Prêt à commencer ?</h2>
+                <h2 class=" fw-bold display-5 justify-content-center align-items-center">Prêt à commencer ?</h2>
                 <p class="lead align-items-center justify-content-center">Rejoignez des milliers de patients qui font confiance à MediConnect CI</p>
                 <a href="registre.html" class="btn btn-light btn-lg p-2">
                     <i class="fas fa-rocket me-2"></i>Créer mon compte gratuitement
                 </a>
-            </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-primary text-white py-5">
-        <div class="container bg-primary-dark container-footer">
+    </main>
+
+    <footer class="text-white">
+        <div class="container bg-primary-white container-footer">
             <div class="row g-4 row-footer">
                 <div class="col-lg-4">
                     <div class="d-flex align-items-center mb-3">
@@ -465,7 +636,7 @@
                         </div>
                         <h5 class="mb-0">MediConnect CI</h5>
                     </div>
-                    <p class="text-muted">
+                    <p class="text-white">
                         La première plateforme de consultation médicale en ligne en Côte d'Ivoire. 
                         Connectez-vous facilement avec des professionnels de santé qualifiés.
                     </p>
@@ -474,26 +645,26 @@
                 <div class="col-lg-2">
                     <h6 class="text-uppercase fw-bold">Liens rapides</h6>
                     <ul class="list-unstyled">
-                        <li><a href="index.html" class="text-muted text-decoration-none">Accueil</a></li>
-                        <li><a href="#services" class="text-muted text-decoration-none">Services</a></li>
-                        <li><a href="register.html" class="text-muted text-decoration-none">Inscription</a></li>
-                        <li><a href="contact.html" class="text-muted text-decoration-none">Contact</a></li>
+                        <li><a href="index.html" class="text-white text-decoration-none">Accueil</a></li>
+                        <li><a href="#services" class="text-white text-decoration-none">Services</a></li>
+                        <li><a href="registre.html" class="text-white text-decoration-none">Inscription</a></li>
+                        <li><a href="contact.html" class="text-white text-decoration-none">Contact</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-3">
                     <h6 class="text-uppercase fw-bold">Support</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted text-decoration-none">Centre d'aide</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Politique de confidentialité</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Conditions d'utilisation</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Centre d'aide</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">FAQ</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Politique de confidentialité</a></li>
+                        <li><a href="#" class="text-white text-decoration-none">Conditions d'utilisation</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-3">
                     <h6 class="text-uppercase fw-bold">Contact</h6>
-                    <ul class="list-unstyled text-muted">
+                    <ul class="list-unstyled text-white">
                         <li><i class="fas fa-envelope me-2"></i>support@mediconnect-ci.com</li>
                         <li><i class="fas fa-phone me-2"></i>+225 XX XX XX XX XX</li>
                         <li><i class="fas fa-map-marker-alt me-2"></i>Abidjan, Côte d'Ivoire</li>
@@ -504,18 +675,16 @@
             <hr class="my-4">
             
             <div class="text-center">
-                <p class="text-muted mb-0">
+                <p class="text-white mb-0">
                     © 2025 MediConnect CI. Tous droits réservés.
                 </p>
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Supabase Client -->
     <script src="supabaseClient.js"></script>
-    <!-- Custom JS -->
+    <script src="navbar.js"></script>
     <script src="main.js"></script>
     <script src="script.js"></script>
 </body>

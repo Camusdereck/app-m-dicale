@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Médecine à Domicile - MediConnect CI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="Css/style.css">
+    <style>
+        .hero-domicile {
+            background: linear-gradient(135deg, #1D375A 0%, #29A7E5 100%);
+            padding: 140px 0 80px 0;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-white shadow-sm">
+        <div class="container-fluid px-4 px-lg-5 mt-2 mb-2">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <div class="logo-icon me-2"><i class="fas fa-stethoscope"></i></div>
+                <span class="text-dark fw-bold">MediConnect CI</span>
+            </a>
+            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav menu" id="dynamic-nav-menu"></ul>
+                <div class="btn-nav ms-auto gap-2 d-flex" id="dynamic-nav-buttons"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: -40px; margin-bottom: 80px; max-width: 800px; position: relative; z-index: 10;">
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-body p-4 p-md-5">
+                
+                <div id="step-1">
+                    <h3 class="fw-bold text-primary-dark mb-4 border-bottom pb-3"><i class="fas fa-user-md me-2"></i>1. Trouver un spécialiste</h3>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Sélectionnez la spécialité recherchée :</label>
+                        <select class="form-select form-select-lg" id="specialite-select">
+                            <option value="" selected disabled>Chargement des spécialités...</option>
+                        </select>
+                    </div>
+
+                    <div id="doctors-grid" class="row g-3 mt-3">
+                        </div>
+                </div>
+
+                <div id="step-2" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                        <h3 class="fw-bold text-primary-dark mb-0"><i class="fas fa-home me-2"></i>2. Détails de la visite</h3>
+                        <button class="btn btn-outline-secondary btn-sm" onclick="retourEtape1()"><i class="fas fa-arrow-left me-1"></i>Retour</button>
+                    </div>
+                    
+                    <div class="alert alert-success d-flex align-items-center mb-4">
+                        <i class="fas fa-user-check fs-4 me-3"></i>
+                        <div>Vous avez sélectionné le <strong id="medecin-choisi-nom">...</strong></div>
+                    </div>
+                    
+                    <form id="domicileForm">
+                        <input type="hidden" id="medecin-id-hidden"> <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Date souhaitée</label>
+                                <input type="date" class="form-control" id="date-input" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Commune</label>
+                                <select class="form-select" id="commune-input" required>
+                                    <option value="" selected disabled>Choisissez votre commune...</option>
+                                    <option value="Cocody">Cocody</option>
+                                    <option value="Yopougon">Yopougon</option>
+                                    <option value="Marcory">Marcory</option>
+                                    <option value="Plateau">Le Plateau</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Adresse exacte et repères</label>
+                            <textarea class="form-control" id="adresse-input" rows="2" placeholder="Ex: Cité Sir, Carrefour Duncan..." required></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Motif de la visite</label>
+                            <textarea class="form-control" id="motif-input" rows="2" placeholder="Symptômes, urgence..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" id="submitBtn">
+                            <i class="fas fa-check-circle me-2"></i>Confirmer la réservation
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="navbar.js"></script>
+    <script src="domicile.js"></script>
+</body>
+</html>

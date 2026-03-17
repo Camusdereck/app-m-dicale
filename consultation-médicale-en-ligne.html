@@ -15,42 +15,23 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Header -->
-    <nav class="navbar navbar-expand-lg fixed-top navbar">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <div class="logo-icon me-2">
-                    <i class="fas fa-stethoscope"></i>
-                </div>
-                <span class="fw-bold text-dark">EMSTE</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto menu">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="index.html">Accueil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#services">Services</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#témoignages">Témoignages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="contact.html">Contact</a>
-                    </li>
-                </ul>
-                
-                <div class="btn-nav">
-                    <a href="contact-prin" class="btn btn-primary btn-ins-1">Je Consulte</a>
-                </div>
+    <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid px-4 px-lg-5 mt-2">
+        <a class="navbar-brand d-flex align-items-center" href="index.html">
+            <div class="logo-icon me-2">
+                <i class="fas fa-stethoscope"></i>
             </div>
+            MediConnect CI
+        </a>
+        <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Menu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav menu" id="dynamic-nav-menu"></ul>
+            <div class="btn-nav ms-auto" id="dynamic-nav-buttons"></div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <section class="hero-section">
         <div class="container">

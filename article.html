@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture - MediConnect CI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .article-header { padding: 120px 0 60px 0; background-color: #f8f9fa; }
+        .article-cover-img { width: 100%; max-height: 500px; object-fit: cover; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .article-content { font-size: 1.15rem; line-height: 1.8; color: #333; margin-top: 2rem; }
+        .article-content p { margin-bottom: 1.5rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-white shadow-sm">
+        <div class="container-fluid px-4 px-lg-5 mt-2 mb-2">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <div class="logo-icon me-2"><i class="fas fa-stethoscope"></i></div>
+                <span class="text-dark fw-bold">MediConnect CI</span>
+            </a>
+            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav menu" id="dynamic-nav-menu"></ul>
+                <div class="btn-nav ms-auto gap-2 d-flex" id="dynamic-nav-buttons"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="loading-state" class="text-center py-5" style="margin-top: 150px;">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-3 text-muted">Chargement de l'article...</p>
+    </div>
+
+    <div id="article-container" style="display: none;">
+        
+        <header class="article-header">
+            <div class="container text-center max-w-75" style="max-width: 800px; margin: 0 auto;">
+                <a href="mediatheque.html" class="text-decoration-none text-muted mb-4 d-inline-block">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la médiathèque
+                </a>
+                <br>
+                <span class="badge bg-primary px-3 py-2 fs-6 mb-3" id="art-categorie">Catégorie</span>
+                <h1 class="display-4 fw-bold text-dark mb-3" id="art-titre">Titre de l'article</h1>
+                <p class="text-muted"><i class="far fa-calendar-alt me-2"></i>Publié le <span id="art-date"></span></p>
+            </div>
+        </header>
+
+        <section class="container py-5" style="max-width: 900px;">
+            <img src="" id="art-image" class="article-cover-img mb-5" alt="Couverture" style="display: none;">
+            
+            <div id="art-video-container" class="ratio ratio-16x9 mb-5 rounded-4 overflow-hidden shadow-lg" style="display: none;">
+                <iframe id="art-video" src="" allowfullscreen></iframe>
+            </div>
+
+            <div class="article-content" id="art-contenu">
+                </div>
+            
+            <hr class="my-5">
+            <div class="text-center">
+                <h5 class="fw-bold mb-3">Cet article vous a aidé ?</h5>
+                <a href="nouveau-rdv.html" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-sm">
+                    Prendre rendez-vous avec un spécialiste
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabaseClient.js"></script>
+    <script src="./navbar.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 1. On récupère l'ID dans l'URL (ex: article.html?id=123)
+            const urlParams = new URLSearchParams(window.location.search);
+            const articleId = urlParams.get('id');
+
+            // S'il n'y a pas d'ID, on renvoie vers la médiathèque
+            if (!articleId) {
+                window.location.href = 'mediatheque.html';
+                return;
+            }
+
+            // 2. On interroge Supabase pour avoir les détails de CET article
+            const { data: article, error } = await window.supabaseClient
+                .from('articles')
+                .select('*')
+                .eq('id', articleId)
+                .single();
+
+            if (error || !article) {
+                document.getElementById('loading-state').innerHTML = '<div class="alert alert-danger w-50 mx-auto">Article introuvable ou supprimé.</div>';
+                return;
+            }
+
+            // 3. On remplit la page avec les données
+            document.title = `${article.titre} - MediConnect CI`;
+            document.getElementById('art-categorie').textContent = article.categorie;
+            document.getElementById('art-titre').textContent = article.titre;
+            
+            const dateObj = new Date(article.created_at);
+            document.getElementById('art-date').textContent = dateObj.toLocaleDateString('fr-FR');
+
+            // Gestion Vidéo ou Image
+            if (article.video_url && article.video_url.trim() !== '') {
+                let embedUrl = article.video_url;
+                if (embedUrl.includes('watch?v=')) {
+                    embedUrl = embedUrl.replace('watch?v=', 'embed/');
+                }
+                document.getElementById('art-video').src = embedUrl;
+                document.getElementById('art-video-container').style.display = 'block';
+            } else if (article.image_url) {
+                document.getElementById('art-image').src = article.image_url;
+                document.getElementById('art-image').style.display = 'block';
+            }
+
+            // Formatage du texte (remplace les sauts de ligne par des vrais paragraphes HTML)
+            if (article.contenu) {
+                const contenuHTML = article.contenu.split('\n').map(para => {
+                    return para.trim() !== '' ? `<p>${para}</p>` : '';
+                }).join('');
+                document.getElementById('art-contenu').innerHTML = contenuHTML;
+            }
+
+            // 4. On cache le chargement et on affiche l'article
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('article-container').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
