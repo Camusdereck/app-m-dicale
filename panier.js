@@ -1,3 +1,7 @@
+let cartTotal = 0;
+let cartDetailsText = '';
+let currentUserData = null;
+
 document.addEventListener('DOMContentLoaded', () => {
     renderCart();
 });
@@ -6,10 +10,15 @@ async function renderCart() {
     const cartContainer = document.getElementById('cart-items-container');
     const sousTotalEl = document.getElementById('sous-total');
     const totalEl = document.getElementById('total-price');
-    const checkoutBtn = document.getElementById('checkout-btn');
+    const payOnlineBtn = document.getElementById('pay-online-btn');
+    const payWhatsappBtn = document.getElementById('pay-whatsapp-btn');
     
     const { data: { user } } = await window.supabaseClient.auth.getUser();
-    if (!user) return;
+    if (!user) {
+        window.location.href = './connexion.html';
+        return;
+    }
+    currentUserData = user;
 
     const { data: cartItems, error } = await window.supabaseClient
         .from('panier')
@@ -30,22 +39,22 @@ async function renderCart() {
         `;
         sousTotalEl.textContent = '0 FCFA';
         totalEl.textContent = '0 FCFA';
-        checkoutBtn.disabled = true;
+        if(payOnlineBtn) payOnlineBtn.disabled = true;
+        if(payWhatsappBtn) payWhatsappBtn.disabled = true;
         return;
     }
 
     let cartHTML = '';
-    let totalPrix = 0;
-    let detailsCommande = ''; // Texte qui sera envoyé sur WhatsApp
+    cartTotal = 0;
+    cartDetailsText = ''; 
 
     cartItems.forEach((item) => {
         const produit = item.produits;
-        totalPrix += (produit.prix * item.quantite);
+        cartTotal += (produit.prix * item.quantite);
         
         const imgUrl = produit.image_url || 'https://via.placeholder.com/150?text=Image';
         const prixFormatte = new Intl.NumberFormat('fr-FR').format(produit.prix * item.quantite) + ' FCFA';
 
-        // Construction du résumé HTML
         cartHTML += `
             <div class="card border-0 shadow-sm rounded-4 mb-3 overflow-hidden">
                 <div class="row g-0 align-items-center">
@@ -68,39 +77,96 @@ async function renderCart() {
             </div>
         `;
 
-        // Construction du texte pour WhatsApp (Saut de ligne = %0A)
-        detailsCommande += `- ${item.quantite}x ${produit.nom} (${prixFormatte})%0A`;
+        cartDetailsText += `- ${item.quantite}x ${produit.nom} (${prixFormatte})\n`;
     });
 
     cartContainer.innerHTML = cartHTML;
     
-    const grandTotal = new Intl.NumberFormat('fr-FR').format(totalPrix) + ' FCFA';
-    sousTotalEl.textContent = grandTotal;
-    totalEl.textContent = grandTotal;
-    checkoutBtn.disabled = false;
-
-    // Gestion du clic vers WhatsApp
-    checkoutBtn.onclick = () => {
-        // Le numéro de l'entreprise (à modifier avec ton vrai numéro, avec l'indicatif 225)
-        const numeroWhatsApp = "2250000000000"; 
-        
-        // Le message prérempli
-        let message = `Bonjour MediConnect CI ! 👋%0AJe souhaite finaliser ma commande :%0A%0A`;
-        message += detailsCommande;
-        message += `%0A*Total à payer : ${grandTotal}*%0A%0A`;
-        message += `Merci de m'indiquer les modalités de livraison.`;
-
-        // Redirection vers l'application WhatsApp
-        const whatsappUrl = `https://wa.me/${numeroWhatsApp}?text=${message}`;
-        window.open(whatsappUrl, '_blank');
-    };
+    const grandTotalFormat = new Intl.NumberFormat('fr-FR').format(cartTotal) + ' FCFA';
+    sousTotalEl.textContent = grandTotalFormat;
+    totalEl.textContent = grandTotalFormat;
+    
+    if(payOnlineBtn) {
+        payOnlineBtn.disabled = false;
+        payOnlineBtn.onclick = () => processOnlinePayment();
+    }
+    if(payWhatsappBtn) {
+        payWhatsappBtn.disabled = false;
+        payWhatsappBtn.onclick = () => processWhatsappOrder(grandTotalFormat);
+    }
 }
 
 async function removeFromCart(panierId) {
-    await window.supabaseClient
-        .from('panier')
-        .delete()
-        .eq('id', panierId);
-        
+    await window.supabaseClient.from('panier').delete().eq('id', panierId);
     renderCart();
+}
+
+// LA FONCTION MAGIQUE QUI VIDE LE PANIER AUTOMATIQUEMENT
+async function clearEntireCart() {
+    if(!currentUserData) return;
+    await window.supabaseClient.from('panier').delete().eq('patient_id', currentUserData.id);
+}
+
+// --- OPTION 1 : COMMANDER SUR WHATSAPP ---
+async function processWhatsappOrder(grandTotalStr) {
+    const numeroWhatsApp = "2250000000000"; // Ton vrai numéro ici
+    
+    let message = `Bonjour MediConnect CI ! 👋\nJe souhaite finaliser ma commande (Paiement à la livraison) :\n\n`;
+    message += cartDetailsText;
+    message += `\n*Total à payer : ${grandTotalStr}*\n\n`;
+    message += `Merci de m'indiquer les modalités de livraison.`;
+
+    // 1. Ouvre WhatsApp
+    window.open(`https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(message)}`, '_blank');
+    
+    // 2. Vide le panier en base de données
+    await clearEntireCart();
+    
+    // 3. Met à jour l'affichage du panier (qui sera maintenant vide)
+    renderCart();
+}
+
+// --- OPTION 2 : PAYER EN LIGNE (WAVE, MTN, ORANGE MONEY) ---
+async function processOnlinePayment() {
+    if (!currentUserData || !currentUserData.email) {
+        alert("Erreur : Email introuvable pour le paiement.");
+        return;
+    }
+
+    let handler = PaystackPop.setup({
+        key: 'pk_live_54950319772acc4e08a83f4e5946f6b1760ed17e', // Clé de test
+        email: currentUserData.email,
+        amount: cartTotal * 100, 
+        currency: 'XOF',
+        ref: 'CMD_' + Math.floor((Math.random() * 1000000000) + 1),
+        callback: function(response) {
+            (async () => {
+                // 1. Enregistre la commande dans Supabase
+                const { error } = await window.supabaseClient
+                    .from('commandes')
+                    .insert([{
+                        patient_id: currentUserData.id,
+                        montant_total: cartTotal,
+                        statut_paiement: 'paye_en_ligne',
+                        details: cartDetailsText
+                    }]);
+
+                if (error) {
+                    alert("Erreur lors de la création de la commande. Contactez le support.");
+                    console.error(error);
+                } else {
+                    alert("✅ Paiement réussi ! Votre commande a été enregistrée. Référence : " + response.reference);
+                    // 2. Vide le panier
+                    await clearEntireCart();
+                    // 3. Recharge l'affichage
+                    renderCart();
+                }
+            })();
+        },
+        onClose: function() {
+            alert("Paiement annulé. Vos articles sont toujours dans le panier.");
+        }
+    });
+
+    handler.openIframe();
 }

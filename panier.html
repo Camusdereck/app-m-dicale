@@ -52,8 +52,12 @@
                             <span class="fw-bold fs-5 text-primary-dark" id="total-price">0 FCFA</span>
                         </div>
 
-                        <button id="checkout-btn" class="btn btn-primary w-100 py-3 fw-bold btn-perso1">
-                            <i class="fas fa-lock me-2"></i>Passer à la caisse
+                        <button id="pay-online-btn" class="btn btn-success w-100 py-3 fw-bold mb-3 shadow-sm" disabled>
+                            <i class="fas fa-credit-card me-2"></i>Payer en ligne (Wave, OM, MTN)
+                        </button>
+                        
+                        <button id="pay-whatsapp-btn" class="btn btn-outline-success w-100 py-3 fw-bold mb-3" disabled>
+                            <i class="fab fa-whatsapp fs-5 me-2"></i>Payer à la livraison (WhatsApp)
                         </button>
                         
                         <div class="text-center mt-3">
@@ -64,9 +68,12 @@
                     </div>
                 </div>
             </div>
+                </div>
+            </div>
         </div>
     </div>
-
+    
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabaseClient.js"></script>
     <script src="navbar.js"></script>

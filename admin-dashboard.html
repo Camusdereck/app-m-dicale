@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Admin - MediConnect CI</title>
+    <title>Super Admin - EMSTE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -18,12 +18,10 @@
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Overlay caché par défaut */
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 1040; }
 
-        /* --- RESPONSIVE MOBILE --- */
         @media (max-width: 991px) {
-            .admin-sidebar { left: -250px; /* Caché par défaut à gauche */ }
+            .admin-sidebar { left: -250px; }
             .admin-sidebar.show { left: 0; }
             .admin-main { margin-left: 0; padding: 15px; }
             .sidebar-overlay.show { display: block; }
@@ -33,7 +31,7 @@
 <body>
 
     <div class="d-lg-none bg-primary text-white p-3 d-flex justify-content-between align-items-center shadow-sm" style="position: sticky; top: 0; z-index: 1040;">
-        <h5 class="mb-0 fw-bold"><i class="fas fa-shield-alt me-2"></i>Admin</h5>
+        <h5 class="mb-0 fw-bold"><i class="fas fa-shield-alt me-2"></i>Admin EMSTE</h5>
         <button class="btn btn-outline-light btn-sm" id="btn-toggle-admin"><i class="fas fa-bars fs-5"></i></button>
     </div>
     
@@ -41,11 +39,13 @@
 
     <div class="admin-sidebar shadow-lg">
         <div class="text-center mb-4 px-3">
-            <h4 class="fw-bold text-white"><i class="fas fa-shield-alt text-primary me-2"></i>MediConnect<span class="text-primary">Admin</span></h4>
+            <h4 class="fw-bold text-white"><i class="fas fa-shield-alt text-primary me-2"></i>EMSTE<span class="text-primary">Admin</span></h4>
         </div>
         <nav id="admin-menu">
             <a href="#" class="active" data-target="dashboard"><i class="fas fa-chart-line me-3"></i>Vue d'ensemble</a>
             <a href="#" data-target="medecins"><i class="fas fa-user-md me-3"></i>Gestion Médecins</a>
+            <a href="#" data-target="patients"><i class="fas fa-users me-3"></i>Gestion Patients</a> 
+            <a href="#" data-target="finances"><i class="fas fa-wallet me-3"></i>Finances & Demandes</a> 
             <a href="#" data-target="blog"><i class="fas fa-newspaper me-3"></i>Médiathèque (Blog)</a>
             <a href="#" data-target="boutique"><i class="fas fa-shopping-cart me-3"></i>Boutique & Produits</a>
             <a href="#" class="text-danger mt-5" id="admin-logout"><i class="fas fa-sign-out-alt me-3"></i>Déconnexion</a>
@@ -55,24 +55,30 @@
     <div class="admin-main">
         
         <div id="dashboard" class="section-panel active">
-            <h2 class="fw-bold text-dark mb-4">Tableau de bord</h2>
+            <h2 class="fw-bold text-dark mb-4">Tableau de bord EMSTE</h2>
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="admin-card p-4 border-bottom border-primary border-4">
                         <h6 class="text-muted text-uppercase mb-2">Total Médecins</h6>
                         <h2 class="fw-bold mb-0" id="stat-medecins">--</h2>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="admin-card p-4 border-bottom border-success border-4">
                         <h6 class="text-muted text-uppercase mb-2">Total Patients</h6>
                         <h2 class="fw-bold mb-0" id="stat-patients">--</h2>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="admin-card p-4 border-bottom border-warning border-4">
                         <h6 class="text-muted text-uppercase mb-2">RDV Effectués</h6>
                         <h2 class="fw-bold mb-0" id="stat-rdv">--</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="admin-card p-4 border-bottom border-info border-4 bg-info bg-opacity-10">
+                        <h6 class="text-muted text-uppercase mb-2">Marge EMSTE</h6>
+                        <h2 class="fw-bold mb-0 text-info" id="stat-revenus">-- FCFA</h2>
                     </div>
                 </div>
             </div>
@@ -81,7 +87,7 @@
         <div id="medecins" class="section-panel">
             <h2 class="fw-bold text-dark mb-4">Base de données Médecins</h2>
             <div class="admin-card p-4">
-                <p class="text-muted mb-4">Validez les comptes et modifiez leur <strong>Score de recherche</strong> (Plus le score est élevé, plus le médecin apparaît en premier).</p>
+                <p class="text-muted mb-4">Validez les comptes et modifiez leur <strong>Score de recherche</strong>.</p>
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
@@ -95,6 +101,67 @@
                         </thead>
                         <tbody id="admin-medecins-list">
                             <tr><td colspan="5" class="text-center text-muted">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="patients" class="section-panel">
+            <h2 class="fw-bold text-dark mb-4">Base de données Patients</h2>
+            <div class="admin-card p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Patient</th>
+                                <th>Contact (Tel / Email)</th>
+                                <th>Date d'inscription</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-patients-list">
+                            <tr><td colspan="4" class="text-center text-muted">Chargement des patients...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="finances" class="section-panel">
+            <h2 class="fw-bold text-dark mb-4">Demandes de virement (Médecins)</h2>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="admin-card p-4 bg-primary text-white">
+                        <h6 class="text-uppercase mb-2 opacity-75">Bénéfice Net EMSTE</h6>
+                        <h2 class="fw-bold mb-0" id="total-marge-plateforme">0 FCFA</h2>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="admin-card p-4 bg-danger text-white">
+                        <h6 class="text-uppercase mb-2 opacity-75">Demandes en attente</h6>
+                        <h2 class="fw-bold mb-0" id="total-dette-medecins">0 FCFA</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-card p-4">
+                <h5 class="fw-bold mb-3">Virements à effectuer</h5>
+                <p class="text-muted mb-4">Lorsqu'un médecin demande son argent, sa demande apparaît ici. Faites le transfert via Wave/Orange Money/MTN puis cliquez sur "Marquer Payé".</p>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Médecin</th>
+                                <th>Montant demandé</th>
+                                <th>Détails du Paiement</th>
+                                <th>Date demande</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-finances-list">
+                            <tr><td colspan="5" class="text-center text-muted">Chargement des demandes...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -154,7 +221,6 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Image de couverture</label>
                             <input type="file" id="art-image-file" class="form-control" accept="image/png, image/jpeg, image/jpg, image/webp" required>
-                            <small class="text-muted">L'image sera automatiquement téléchargée sur nos serveurs.</small>
                         </div>
                         <div class="mb-3">
                             <label class="form-label fw-bold text-danger">Lien Vidéo YouTube (Optionnel)</label>

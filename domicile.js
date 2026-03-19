@@ -1,5 +1,6 @@
 let currentUser = null;
 let tousLesMedecins = [];
+let tarifSelectionne = 15000; // Par défaut, sera écrasé par le prix du médecin
 
 document.addEventListener('DOMContentLoaded', async () => {
     const { data: { user }, error: authError } = await window.supabaseClient.auth.getUser();
@@ -32,7 +33,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const adresse = document.getElementById('adresse-input').value;
         const motif = document.getElementById('motif-input').value;
         const dateStr = document.getElementById('date-input').value;
-        const datetimeStr = `${dateStr}T08:00:00`;
+        const datetimeStr = `${dateStr}T08:00:00`; // Heure indicative pour domicile
+
+        // Calculs financiers pour le déplacement
+        const margePlateforme = tarifSelectionne * 0.20;
+        const partMedecin = tarifSelectionne - margePlateforme;
 
         const { error } = await window.supabaseClient
             .from('rendez_vous')
@@ -42,9 +47,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 date_heure: datetimeStr,
                 motif: motif,
                 statut: 'en_attente',
+                statut_paiement: 'en_attente',
                 type_consultation: 'domicile',
                 commune: commune,
-                adresse_exacte: adresse
+                adresse_exacte: adresse,
+                montant_total: tarifSelectionne,
+                marge_plateforme: margePlateforme,
+                part_medecin: partMedecin
             }]);
 
         if (error) {
@@ -52,8 +61,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             btn.innerHTML = originalText;
             btn.disabled = false;
         } else {
-            btn.classList.replace('btn-primary', 'btn-success');
+            btn.classList.replace('btn-danger', 'btn-success');
             btn.innerHTML = '<i class="fas fa-check-double me-2"></i>Réservation confirmée !';
+            
+            // Notification SMS !
+            try {
+                const { data: patientData } = await window.supabaseClient.from('patients').select('telephone').eq('id', currentUser.id).single();
+                const medecinNom = document.getElementById('medecin-choisi-nom').textContent;
+                const dateJolie = new Date(datetimeStr).toLocaleDateString('fr-FR'); // Juste la date pour le domicile
+
+                if (patientData && patientData.telephone && typeof envoyerSMSNotification === 'function') {
+                    envoyerSMSNotification(patientData.telephone, dateJolie, medecinNom);
+                }
+            } catch (smsError) { console.error("Erreur SMS :", smsError); }
+
             setTimeout(() => { window.location.href = './dashboard.html'; }, 2000);
         }
     });
@@ -62,10 +83,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadSpecialtiesAndDoctors() {
     const select = document.getElementById('specialite-select');
     
-    // Récupération des médecins et de leurs notes
+    // On récupère les médecins avec leur tarif domicile
     const { data: medecins, error } = await window.supabaseClient
         .from('medecins')
-        .select('id, first_name, last_name, specialite, note_moyenne');
+        .select('id, first_name, last_name, specialite, note_moyenne, tarif_domicile');
 
     if (error || !medecins || medecins.length === 0) {
         select.innerHTML = '<option value="">Aucun médecin disponible</option>';
@@ -75,7 +96,6 @@ async function loadSpecialtiesAndDoctors() {
     tousLesMedecins = medecins;
 
     const specialitesUniques = [...new Set(medecins.map(m => m.specialite).filter(s => s))];
-    
     select.innerHTML = '<option value="" selected disabled>Choisissez une spécialité...</option>';
     specialitesUniques.forEach(spec => {
         select.innerHTML += `<option value="${spec}">${spec}</option>`;
@@ -88,7 +108,6 @@ function afficherMedecins(e) {
     grid.style.display = 'flex';
     grid.innerHTML = ''; 
 
-    // Filtrer et trier par la note (Les meilleurs en haut)
     let medecinsFiltres = tousLesMedecins
         .filter(m => m.specialite === specialiteChoisie)
         .sort((a, b) => (b.note_moyenne || 0) - (a.note_moyenne || 0));
@@ -137,6 +156,13 @@ window.passerAEtape2 = function(medecinId, medecinNom) {
     
     document.getElementById('medecin-id-hidden').value = medecinId;
     document.getElementById('medecin-choisi-nom').textContent = medecinNom;
+
+    // Récupérer le tarif domicile du médecin
+    const med = tousLesMedecins.find(m => m.id === medecinId);
+    tarifSelectionne = parseInt(med.tarif_domicile) || 15000;
+    
+    // Afficher le prix
+    document.getElementById('prix-total-display').textContent = tarifSelectionne.toLocaleString('fr-FR') + ' FCFA';
 }
 
 window.retourEtape1 = function() {

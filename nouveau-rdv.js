@@ -39,10 +39,10 @@ function formatTime(dateObj) {
 async function loadSpecialtiesAndDoctors() {
     const select = document.getElementById('specialite-select');
     
-    // On récupère aussi la note_moyenne pour le scoring
+    // On récupère le tarif vidéo
     const { data: medecins, error } = await window.supabaseClient
         .from('medecins')
-        .select('id, first_name, last_name, specialite, note_moyenne, heure_debut, heure_fin, duree_consultation');
+        .select('id, first_name, last_name, specialite, note_moyenne, heure_debut, heure_fin, duree_consultation, tarif_video');
 
     if (error || !medecins) {
         select.innerHTML = '<option value="" disabled>Erreur de chargement</option>';
@@ -52,7 +52,6 @@ async function loadSpecialtiesAndDoctors() {
     tousLesMedecins = medecins;
 
     const specialitesUniques = [...new Set(medecins.map(m => m.specialite).filter(s => s))];
-    
     select.innerHTML = '<option value="" disabled selected>-- Quelle spécialité recherchez-vous ? --</option>';
     specialitesUniques.forEach(spec => {
         select.innerHTML += `<option value="${spec}">${spec}</option>`;
@@ -65,7 +64,6 @@ function afficherMedecins(e) {
     grid.style.display = 'flex';
     grid.innerHTML = ''; 
 
-    // Filtrer et trier par note (Scoring) du plus grand au plus petit
     let medecinsFiltres = tousLesMedecins
         .filter(m => m.specialite === specialiteChoisie)
         .sort((a, b) => (b.note_moyenne || 0) - (a.note_moyenne || 0));
@@ -79,7 +77,6 @@ function afficherMedecins(e) {
         const nom = `Dr. ${med.first_name || ''} ${med.last_name || ''}`;
         const note = med.note_moyenne ? parseFloat(med.note_moyenne).toFixed(1) : 'Nouveau';
         
-        // Génération des étoiles
         let starsHTML = '';
         if (note !== 'Nouveau') {
             for(let i=1; i<=5; i++) {
@@ -120,19 +117,21 @@ window.passerAEtape2 = function(medecinId, medecinNom) {
     document.getElementById('doctor-id-hidden').value = medecinId;
     document.getElementById('medecin-choisi-nom').textContent = medecinNom;
 
-    // Récupérer la config du médecin choisi
     const med = tousLesMedecins.find(m => m.id === medecinId);
     selectedDoctorConfig = {
         debut: med.heure_debut || '09:00:00',
         fin: med.heure_fin || '17:00:00',
-        duree: parseInt(med.duree_consultation || '30')
+        duree: parseInt(med.duree_consultation || '30'),
+        tarif_video: parseInt(med.tarif_video) || 5000
     };
+
+    // Affiche le prix
+    document.getElementById('prix-total-display').textContent = selectedDoctorConfig.tarif_video.toLocaleString('fr-FR') + ' FCFA';
 }
 
 window.retourEtape1 = function() {
     document.getElementById('step-2').style.display = 'none';
     document.getElementById('step-1').style.display = 'block';
-    // On réinitialise le formulaire
     document.getElementById('date-input').value = '';
     document.getElementById('time-container').style.display = 'none';
     document.getElementById('motif-container').style.display = 'none';
@@ -160,7 +159,7 @@ async function handleDateSelection(e) {
         .neq('statut', 'annule'); 
 
     if (error) {
-        slotsContainer.innerHTML = '<p class="text-danger">Erreur lors de la vérification.</p>';
+        slotsContainer.innerHTML = '<p class="text-danger">Erreur de vérification.</p>';
         return;
     }
 
@@ -237,8 +236,12 @@ async function submitRdv() {
     const dateStr = document.getElementById('date-input').value; 
     const timeStr = document.getElementById('selected-time').value; 
     const motif = document.getElementById('motif-input').value;
-
     const datetimeStr = `${dateStr}T${timeStr}:00`;
+
+    // Calculs financiers
+    const montantTotal = selectedDoctorConfig.tarif_video;
+    const margePlateforme = montantTotal * 0.20;
+    const partMedecin = montantTotal - margePlateforme;
 
     const { error } = await window.supabaseClient
         .from('rendez_vous')
@@ -247,50 +250,31 @@ async function submitRdv() {
             medecin_id: doctorId,
             date_heure: datetimeStr,
             motif: motif,
+            type_consultation: 'video', 
             statut: 'en_attente',
-            type_consultation: 'video' // Consultation classique
+            statut_paiement: 'en_attente',
+            montant_total: montantTotal,
+            marge_plateforme: margePlateforme,
+            part_medecin: partMedecin
         }]);
 
     if (error) {
         alert("Erreur : " + error.message);
-        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Confirmer le rendez-vous';
+        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Confirmer la demande';
         btn.disabled = false;
     } else {
         btn.classList.replace('btn-primary', 'btn-success');
-        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Rendez-vous confirmé !';
+        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Rendez-vous pré-réservé !';
         
-        // ==========================================
-        // DÉCLENCHEMENT DU SMS ! (La "clé de contact")
-        // ==========================================
         try {
-            // 1. On a besoin du numéro du patient pour lui envoyer le SMS
-            // On le récupère de la table 'patients' via Supabase
-            const { data: patientData } = await window.supabaseClient
-                .from('patients')
-                .select('phone')
-                .eq('id', currentUser.id)
-                .single();
-            
-            // 2. On a besoin du nom du médecin (déjà affiché à l'écran)
+            const { data: patientData } = await window.supabaseClient.from('patients').select('telephone').eq('id', currentUser.id).single();
             const medecinNom = document.getElementById('medecin-choisi-nom').textContent;
-            
-            // 3. On formate la date pour que ce soit joli dans le SMS (ex: 14/03/2026 à 14h30)
-            const dateJolie = new Date(datetimeStr).toLocaleString('fr-FR', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute:'2-digit'
-            }).replace(':', 'h');
+            const dateJolie = new Date(datetimeStr).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
 
-            // 4. On lance la voiture ! (La fonction dans supabaseClient.js)
-            if (patientData && patientData.phone && typeof envoyerSMSNotification === 'function') {
-                envoyerSMSNotification(patientData.phone, dateJolie, medecinNom);
-            } else {
-                console.warn("Impossible d'envoyer le SMS : Numéro introuvable ou fonction non chargée.");
+            if (patientData && patientData.telephone && typeof envoyerSMSNotification === 'function') {
+                envoyerSMSNotification(patientData.telephone, dateJolie, medecinNom);
             }
-        } catch (smsError) {
-            console.error("Erreur lors de la tentative d'envoi du SMS :", smsError);
-            // On ne bloque pas le patient si le SMS échoue, on continue !
-        }
-        // ==========================================
+        } catch (smsError) { console.error("Erreur SMS :", smsError); }
 
         setTimeout(() => { window.location.href = './dashboard.html'; }, 1500);
     }

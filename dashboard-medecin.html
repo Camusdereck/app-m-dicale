@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau de Bord Médecin - MediConnect CI</title>
+    <title>Tableau de Bord Médecin - EMSTE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -40,14 +40,14 @@
         </header>
 
         <aside class="sidebar">
-        <ul class="menu-dashbord">
-            <li data-section="hero"><a href="#"><i class="bi bi-house-door-fill me-2"></i>Accueil</a></li>
-            <li data-section="rendezvous" class="active"><a href="#"><i class="bi bi-calendar-check-fill me-2"></i>Rendez-vous</a></li>
-            <li data-section="patients"><a href="#"><i class="bi bi-people-fill me-2"></i>Patients</a></li>
-            
-            <li><a href="./gestion-paiements.html"><i class="bi bi-wallet-fill me-2"></i>Revenus & Factures</a></li>
-            <li><a href="./messagerie.html" id="nav-messagerie"><i class="bi bi-chat-dots-fill me-2"></i>Messagerie <span id="msg-badge" class="badge bg-danger rounded-pill ms-2 d-none">0</span></a></li>
-    </aside>
+            <ul class="menu-dashbord">
+                <li data-section="hero"><a href="#"><i class="bi bi-house-door-fill me-2"></i>Accueil</a></li>
+                <li data-section="rendezvous" class="active"><a href="#"><i class="bi bi-calendar-check-fill me-2"></i>Rendez-vous</a></li>
+                <li data-section="patients"><a href="#"><i class="bi bi-people-fill me-2"></i>Patients</a></li>
+                <li data-section="revenus"><a href="#"><i class="bi bi-wallet-fill me-2"></i>Mon Portefeuille</a></li>
+                <li><a href="./messagerie.html" id="nav-messagerie"><i class="bi bi-chat-dots-fill me-2"></i>Messagerie <span id="msg-badge" class="badge bg-danger rounded-pill ms-2 d-none">0</span></a></li>
+            </ul>
+        </aside>
 
         <main class="dashboard-container">
             
@@ -55,7 +55,7 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h1 class="dashbord-hero-title mb-1" id="welcome-message">Bonjour Dr., bienvenue !</h1>
-                        <p class="text-muted">Voici le résumé de votre activité en temps réel.</p>
+                        <p class="text-muted">Voici le résumé de votre activité en temps réel sur EMSTE.</p>
                     </div>
                 </div>
 
@@ -71,7 +71,7 @@
                     <div class="col-md-4 mb-3">
                         <div class="card bg-success text-white shadow-sm border-0 h-100 rounded-4">
                             <div class="card-body d-flex flex-column justify-content-center">
-                                <h6 class="text-white-50 text-uppercase fw-bold mb-1"><i class="fas fa-wallet me-2"></i>Revenus du mois</h6>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-1"><i class="fas fa-wallet me-2"></i>Solde Disponible</h6>
                                 <h2 class="fw-bold mb-0" id="summary-revenue">0 FCFA</h2>
                             </div>
                         </div>
@@ -99,7 +99,7 @@
                 </div>
             </section>
 
-            <section id="rendezvous" class="rdv-section dashboard-section active">
+            <section id="rendezvous" class="rdv-section dashboard-section" style="display: none;">
                 <div class="appointments-section">
                     <div class="section-header">
                         <h2 class="section-title">📅 Mes Rendez-vous</h2>
@@ -111,19 +111,17 @@
                     </div>
 
                     <div class="tab-content p-4">
-                        <div id="doc-upcoming" class="doc-tab-panel" style="display: block;">
-                            </div>
-                        <div id="doc-history" class="doc-tab-panel" style="display: none;">
-                            </div>
+                        <div id="doc-upcoming" class="doc-tab-panel" style="display: block;"></div>
+                        <div id="doc-history" class="doc-tab-panel" style="display: none;"></div>
                     </div>
                 </div>
             </section>
 
-            <section id="patients" class="container-fluid mt-5 py-5 dashboard-section">
+            <section id="patients" class="container-fluid mt-5 py-5 dashboard-section" style="display: none;">
                 <div class="row">
-                    <div class="col-12 col-lg-6 mb-4">
+                    <div class="col-12 col-lg-8 mx-auto mb-4">
                         <div class="section-card">
-                            <div class="section-header"><h3 class="section-title">🩺 Patients récents</h3></div>
+                            <div class="section-header"><h3 class="section-title">🩺 Mes Patients</h3></div>
                             <div class="section-body">
                                 <div class="mb-4">
                                     <h6 class="text-muted mb-3">Derniers dossiers ouverts</h6>
@@ -131,37 +129,35 @@
                                         <p class="text-muted small">Aucun patient récent.</p>
                                     </div>
                                 </div>
-                                <button class="btn-eyes" id="view-all-patients-button"><i class="fas fa-eye me-2"></i> Voir tous mes patients</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-12 col-lg-6 mb-4">
-                        <div class="section-card">
-                            <div class="section-header"><h3 class="section-title">💳 Mes Revenus</h3></div>
-                            <div class="section-body">
-                                <div class="mb-4">
-                                    <h6 class="text-muted mb-3">Total du mois</h6>
-                                    <div id="monthly-revenue-container">
-                                        <h2 class="text-success fw-bold">0 FCFA</h2>
-                                    </div>
-                                </div>
-                                <div class="mb-4">
-                                    <a href="./gestion-paiements.html" class="btn-eyes" id="recent-payments-list">
-                                      <i class="fa fa-check-circle" aria-hidden="true"></i> Valider les paiements
-                                    </a>
-                                </div>
+                                <button class="btn-eyes w-100" id="view-all-patients-button"><i class="fas fa-eye me-2"></i> Voir l'annuaire de mes patients</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
             
-            <section id="revenus" class="dashboard-section">
-                </section>
+            <section id="revenus" class="container-fluid mt-5 py-5 dashboard-section" style="display: none;">
+                <div class="row">
+                    <div class="col-12 col-lg-8 mx-auto mb-4">
+                        <div class="section-card border-success border-top border-4">
+                            <div class="section-header"><h3 class="section-title text-success">💼 Mon Portefeuille EMSTE</h3></div>
+                            <div class="section-body text-center py-4">
+                                <h6 class="text-muted mb-3">Solde disponible pour retrait</h6>
+                                <div id="monthly-revenue-container">
+                                    <h1 class="text-success fw-bold mb-4" style="font-size: 3.5rem;" id="revenue-display-large">0 FCFA</h1>
+                                    <button class="btn btn-lg btn-success fw-bold px-5 py-3 shadow-sm" onclick="demanderRetrait()">
+                                        <i class="fas fa-money-bill-wave me-2"></i>Demander un virement sur mon compte
+                                    </button>
+                                </div>
+                                <p class="text-muted small mt-4"><i class="fas fa-info-circle me-1"></i> Les virements sont traités sous 48h ouvrées vers Wave, Orange Money ou compte bancaire.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             
-            <section id="messagerie" class="dashboard-section">
-                </section>
+            <section id="messagerie" class="dashboard-section" style="display: none;">
+            </section>
 
         </main>
     </div>
@@ -192,6 +188,66 @@
                 </div>
                 <div class="modal-footer bg-light rounded-bottom-4" id="doc-modal-footer-actions">
                     </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="otpValidationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header bg-success text-white rounded-top-4">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-lock me-2"></i>Validation de la consultation</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <p class="text-muted mb-4">Pour clôturer cette consultation et recevoir votre paiement, veuillez entrer le <strong>code secret à 4 chiffres</strong> fourni par le patient.</p>
+                    
+                    <input type="text" id="otp-input" class="form-control form-control-lg text-center fw-bold mb-3 mx-auto" placeholder="Ex: 4812" maxlength="4" style="font-size: 2.5rem; letter-spacing: 15px; width: 80%; border: 2px solid #198754;">
+                    
+                    <div id="otp-error" class="text-danger small fw-bold mt-2" style="display: none;">Code incorrect. Veuillez réessayer.</div>
+                </div>
+                <div class="modal-footer bg-light rounded-bottom-4 justify-content-center border-0">
+                    <button type="button" class="btn btn-success fw-bold px-5 py-3 w-100 shadow-sm" id="btn-validate-otp">
+                        <i class="fas fa-check-circle me-2"></i>Valider et Encaisser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="retraitModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 rounded-4 shadow-lg">
+                <div class="modal-header bg-success text-white rounded-top-4">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-money-bill-wave me-2"></i>Demander un retrait</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-info small mb-4">
+                        <i class="fas fa-info-circle me-1"></i> Votre solde actuel est de <strong id="modal-solde-dispo">0 FCFA</strong>.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Méthode de réception</label>
+                        <select id="retrait-methode" class="form-select form-select-lg">
+                            <option value="wave">Wave</option>
+                            <option value="orange_money">Orange Money</option>
+                            <option value="mtn_money">MTN Mobile Money</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Numéro de compte (Mobile Money)</label>
+                        <input type="text" id="retrait-numero" class="form-control form-control-lg" placeholder="Ex: 0102030405">
+                    </div>
+
+                    <div id="retrait-error" class="text-danger small fw-bold mt-2 mb-3" style="display: none;"></div>
+                </div>
+                <div class="modal-footer bg-light rounded-bottom-4 justify-content-center border-0">
+                    <button type="button" class="btn btn-success fw-bold px-5 py-3 w-100 shadow-sm" id="btn-valider-retrait">
+                        <i class="fas fa-paper-plane me-2"></i>Envoyer la demande
+                    </button>
+                </div>
             </div>
         </div>
     </div>

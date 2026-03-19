@@ -1,15 +1,15 @@
-// profil.js - VERSION FINALE AVEC UPLOAD D'AVATAR
+// profil.js - VERSION FINALE (Multi-Rôles + Tarifs + Retour Intelligent)
 
 let currentUser = null;
-let currentRole = null; // 'patient' ou 'medecin'
+let currentRole = null; 
 
 document.addEventListener('DOMContentLoaded', () => {
     initProfile();
-    setupAvatarUpload(); // Initialisation de l'upload
+    setupAvatarUpload(); 
 });
 
 async function initProfile() {
-    // 1. Vérifier qui est connecté
+    // 1. Vérification de la session
     const { data: { user }, error: authError } = await window.supabaseClient.auth.getUser();
     if (authError || !user) {
         window.location.href = "./connexion.html";
@@ -18,7 +18,7 @@ async function initProfile() {
     currentUser = user;
     document.getElementById('email-input').value = user.email;
 
-    // 2. Déterminer si c'est un patient ou un médecin
+    // 2. Détection du rôle et Affichage dynamique
     const { data: medecinData } = await window.supabaseClient
         .from('medecins')
         .select('*')
@@ -29,10 +29,21 @@ async function initProfile() {
         currentRole = 'medecin';
         document.getElementById('role-badge').textContent = "Médecin";
         document.getElementById('role-badge').classList.replace('bg-secondary', 'bg-success');
-        document.getElementById('doctor-fields').style.display = 'block';
+        
+        // --- CORRECTION : Affichage forcé de la section médecin ---
+        const doctorSection = document.getElementById('doctor-only-fields');
+        if (doctorSection) {
+            doctorSection.style.display = 'block';
+        }
+        
+        // Mise à jour du lien de retour pour le médecin
+        const backBtn = document.getElementById('back-to-dashboard');
+        if (backBtn) {
+            backBtn.href = "dashboard-medecin.html";
+        }
+
         fillForm(medecinData);
     } else {
-        // Si ce n'est pas un médecin, c'est un patient
         const { data: patientData } = await window.supabaseClient
             .from('patients')
             .select('*')
@@ -43,11 +54,18 @@ async function initProfile() {
             currentRole = 'patient';
             document.getElementById('role-badge').textContent = "Patient";
             document.getElementById('role-badge').classList.replace('bg-secondary', 'bg-info');
+            
+            // Mise à jour du lien de retour pour le patient
+            const backBtn = document.getElementById('back-to-dashboard');
+            if (backBtn) {
+                backBtn.href = "dashboard.html";
+            }
+
             fillForm(patientData);
         }
     }
 
-    // 3. Gérer la sauvegarde du formulaire texte
+    // 3. Sauvegarde du formulaire
     const form = document.getElementById('profileForm');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -58,6 +76,7 @@ async function initProfile() {
         btn.disabled = true;
 
         const tableToUpdate = currentRole === 'medecin' ? 'medecins' : 'patients';
+        
         const updateData = {
             first_name: document.getElementById('prenom-input').value,
             last_name: document.getElementById('nom-input').value,
@@ -66,6 +85,10 @@ async function initProfile() {
 
         if (currentRole === 'medecin') {
             updateData.specialite = document.getElementById('specialite-input').value;
+            updateData.moyen_paiement = document.getElementById('moyen-paiement').value;
+            updateData.coordonnees_paiement = document.getElementById('coordonnees-paiement').value;
+            updateData.tarif_video = parseInt(document.getElementById('tarif-video').value) || 5000;
+            updateData.tarif_domicile = parseInt(document.getElementById('tarif-domicile').value) || 15000;
         }
 
         const { error } = await window.supabaseClient
@@ -74,16 +97,10 @@ async function initProfile() {
             .eq('id', currentUser.id);
 
         if (error) {
-            alert("Erreur lors de la mise à jour : " + error.message);
+            alert("Erreur : " + error.message);
         } else {
-            alert("✅ Votre profil a été mis à jour avec succès !");
-            
-            // On met à jour les initiales SEULEMENT s'il n'y a pas déjà une photo
-            const avatarContainer = document.getElementById('profile-avatar');
-            if (!avatarContainer.querySelector('img')) {
-                const initiales = (updateData.first_name.charAt(0) + updateData.last_name.charAt(0)).toUpperCase();
-                avatarContainer.innerHTML = initiales;
-            }
+            alert("✅ Profil mis à jour !");
+            updateAvatarDisplay(updateData.first_name, updateData.last_name);
         }
 
         btn.innerHTML = originalText;
@@ -92,25 +109,34 @@ async function initProfile() {
 }
 
 function fillForm(data) {
-    if (data.first_name) document.getElementById('prenom-input').value = data.first_name;
-    if (data.last_name) document.getElementById('nom-input').value = data.last_name;
-    if (data.telephone) document.getElementById('telephone-input').value = data.telephone;
+    document.getElementById('prenom-input').value = data.first_name || '';
+    document.getElementById('nom-input').value = data.last_name || '';
+    document.getElementById('telephone-input').value = data.telephone || '';
     
-    if (currentRole === 'medecin' && data.specialite) {
-        document.getElementById('specialite-input').value = data.specialite;
+    if (currentRole === 'medecin') {
+        document.getElementById('specialite-input').value = data.specialite || '';
+        document.getElementById('moyen-paiement').value = data.moyen_paiement || 'Wave';
+        document.getElementById('coordonnees-paiement').value = data.coordonnees_paiement || '';
+        document.getElementById('tarif-video').value = data.tarif_video || 5000;
+        document.getElementById('tarif-domicile').value = data.tarif_domicile || 15000;
     }
 
-    // Affichage de l'avatar : Photo si elle existe, sinon Initiales
     const avatarContainer = document.getElementById('profile-avatar');
     if (data.avatar_url) {
         avatarContainer.innerHTML = `<img src="${data.avatar_url}" style="width: 100%; height: 100%; object-fit: cover;">`;
-    } else if (data.first_name || data.last_name) {
-        const initiales = ((data.first_name ? data.first_name.charAt(0) : '') + (data.last_name ? data.last_name.charAt(0) : '')).toUpperCase();
+    } else {
+        updateAvatarDisplay(data.first_name, data.last_name);
+    }
+}
+
+function updateAvatarDisplay(fn, ln) {
+    const avatarContainer = document.getElementById('profile-avatar');
+    if (!avatarContainer.querySelector('img')) {
+        const initiales = ((fn ? fn[0] : '') + (ln ? ln[0] : '')).toUpperCase() || '<i class="fas fa-user"></i>';
         avatarContainer.innerHTML = initiales;
     }
 }
 
-// 4. Fonction dédiée à l'upload de la photo de profil
 function setupAvatarUpload() {
     const avatarUpload = document.getElementById('avatar-upload');
     if (!avatarUpload) return;
@@ -120,48 +146,30 @@ function setupAvatarUpload() {
         if (!file) return;
 
         const avatarContainer = document.getElementById('profile-avatar');
-        const originalContent = avatarContainer.innerHTML;
-        
-        // Afficher un loader pendant l'upload
         avatarContainer.innerHTML = '<i class="fas fa-spinner fa-spin text-white"></i>';
 
         try {
-            // Créer un nom de fichier unique basé sur l'ID de l'utilisateur
             const fileExt = file.name.split('.').pop();
-            const fileName = `${currentUser.id}.${fileExt}`;
-            const filePath = `${currentRole}s/${fileName}`; // Ex: patients/123.jpg ou medecins/456.jpg
+            const filePath = `${currentRole}s/${currentUser.id}.${fileExt}`; 
 
-            // 1. Envoyer l'image dans le bucket 'avatars' (upsert: true permet d'écraser l'ancienne photo)
             const { error: uploadError } = await window.supabaseClient.storage
                 .from('avatars')
                 .upload(filePath, file, { upsert: true });
 
             if (uploadError) throw uploadError;
 
-            // 2. Récupérer l'URL publique de l'image
             const { data: { publicUrl } } = window.supabaseClient.storage
                 .from('avatars')
                 .getPublicUrl(filePath);
 
-            // Ajouter un timestamp à l'URL pour forcer le navigateur à recharger la nouvelle image (éviter le cache)
-            const imageUrlWithCacheBuster = `${publicUrl}?t=${new Date().getTime()}`;
-
-            // 3. Sauvegarder l'URL dans la table correspondante (patients ou medecins)
             const tableToUpdate = currentRole === 'medecin' ? 'medecins' : 'patients';
-            const { error: dbError } = await window.supabaseClient
-                .from(tableToUpdate)
-                .update({ avatar_url: publicUrl }) 
-                .eq('id', currentUser.id);
+            await window.supabaseClient.from(tableToUpdate).update({ avatar_url: publicUrl }).eq('id', currentUser.id);
 
-            if (dbError) throw dbError;
-
-            // 4. Mettre à jour l'interface visuelle
-            avatarContainer.innerHTML = `<img src="${imageUrlWithCacheBuster}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            avatarContainer.innerHTML = `<img src="${publicUrl}?t=${Date.now()}" style="width: 100%; height: 100%; object-fit: cover;">`;
             
         } catch (error) {
-            console.error("Erreur lors de l'upload:", error);
-            alert("Erreur lors de la mise à jour de la photo. Veuillez réessayer.");
-            avatarContainer.innerHTML = originalContent; // Remettre les initiales en cas d'erreur
+            alert("Erreur photo : " + error.message);
+            initProfile();
         }
     });
 }

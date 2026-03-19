@@ -1,7 +1,8 @@
-// dashboard-medecin.js - VERSION FINALE (Aperçu des détails inclus)
+// dashboard-medecin.js - VERSION SÉCURISÉE AVEC CODE OTP
 
-// On crée une carte pour mémoriser les RDV
 let rdvDocDataMap = {};
+let currentValidationRdvId = null; // Stocke l'ID du RDV en cours de validation
+let currentValidationMontant = 0;  // Stocke le montant à encaisser
 
 document.addEventListener('DOMContentLoaded', () => {
     loadDoctorInfo();
@@ -10,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkUnreadMessages();
     setupDoctorUI();
     initDocSidebarNavigation();
+    setupOtpValidation(); // NOUVEAU : Initialise le système de validation
 });
 
 async function loadDoctorInfo() {
@@ -42,7 +44,7 @@ async function fetchDoctorAppointments() {
 
     const { data: appointments, error } = await window.supabaseClient
         .from('rendez_vous')
-        .select(`id, statut, motif, date_heure, type_consultation, commune, adresse_exacte, patients ( id, first_name, last_name )`)
+        .select(`id, statut, motif, date_heure, type_consultation, commune, adresse_exacte, statut_paiement, part_medecin, patients ( id, first_name, last_name )`)
         .eq('medecin_id', user.id)
         .order('date_heure', { ascending: false }); 
 
@@ -61,7 +63,6 @@ async function fetchDoctorAppointments() {
 
     if (appointments && appointments.length > 0) {
         appointments.forEach(rdv => {
-            // On sauvegarde le rdv dans la mémoire globale
             rdvDocDataMap[rdv.id] = rdv;
 
             const patient = rdv.patients;
@@ -83,10 +84,8 @@ async function fetchDoctorAppointments() {
             if (rdv.statut === 'en_attente') {
                 badgeClass = 'bg-warning text-dark';
                 badgeText = 'En attente';
-                // MISE À JOUR : Le bouton principal est "Détails"
-                actionsHTML = `
-                    <button class="btn btn-outline-primary btn-sm flex-fill" onclick="showDocRdvDetails('${rdv.id}')"><i class="fas fa-eye me-1"></i> Voir les détails</button>
-                `;
+                actionsHTML = `<button class="btn btn-sm btn-outline-primary" onclick="showDocRdvDetails('${rdv.id}')"><i class="fas fa-eye"></i> Détails de la demande</button>`;
+                
             } else if (rdv.statut === 'confirme') {
                 badgeClass = 'bg-success';
                 badgeText = 'Confirmé';
@@ -103,6 +102,10 @@ async function fetchDoctorAppointments() {
                         <a href="./dossier-patient-medecin.html?id=${patientId}" class="btn btn-secondary btn-sm flex-fill" title="Dossier Médical"><i class="fas fa-folder-open me-1"></i> Dossier</a>
                         <a href="https://wa.me/?text=${messageWhatsApp}" target="_blank" class="btn btn-success btn-sm flex-fill" style="background-color: #25D366; border-color: #25D366;" title="Contacter sur WhatsApp"><i class="fab fa-whatsapp me-1"></i> Contacter</a>
                         <a href="./creer-ordonnance.html?consultation_id=${rdv.id}" class="btn btn-primary btn-sm flex-fill" title="Clôturer et Prescrire"><i class="fas fa-pills me-1"></i> Prescrire</a>
+                        
+                        <button class="btn btn-dark btn-sm w-100 mt-1 fw-bold shadow-sm" onclick="ouvrirModalValidation('${rdv.id}', ${rdv.part_medecin || 2000})">
+                            <i class="fas fa-lock me-1"></i> Terminer & Encaisser
+                        </button>
                     </div>
                 `;
             } else if (rdv.statut === 'termine') {
@@ -118,7 +121,7 @@ async function fetchDoctorAppointments() {
             }
 
             const cardHTML = `
-                <div class="appointment-card mb-4 p-3 border rounded shadow-sm">
+                <div class="appointment-card mb-4 p-3 border rounded shadow-sm bg-white">
                     <div class="appointment-details">
                         <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
                             <div>
@@ -180,7 +183,91 @@ async function fetchDoctorAppointments() {
     if (summaryUpcomingCount) summaryUpcomingCount.textContent = upcomingCount;
 }
 
-// NOUVELLE FONCTION : Afficher l'aperçu dans le Modal
+// ==================================================
+// LA NOUVELLE LOGIQUE DE SÉCURITÉ (CODE OTP)
+// ==================================================
+
+// 1. Ouvre le Modal et mémorise de quel RDV on parle
+window.ouvrirModalValidation = function(rdvId, montantGagne) {
+    currentValidationRdvId = rdvId;
+    currentValidationMontant = montantGagne;
+    
+    // On nettoie le champ de saisie avant d'ouvrir
+    document.getElementById('otp-input').value = '';
+    document.getElementById('otp-error').style.display = 'none';
+    
+    const modal = new bootstrap.Modal(document.getElementById('otpValidationModal'));
+    modal.show();
+};
+
+// 2. Configure le bouton "Valider" du Modal
+function setupOtpValidation() {
+    const btnValidateOtp = document.getElementById('btn-validate-otp');
+    if (!btnValidateOtp) return;
+
+    btnValidateOtp.addEventListener('click', async () => {
+        const inputCode = document.getElementById('otp-input').value.trim();
+        const errorDiv = document.getElementById('otp-error');
+        
+        // Petite vérification locale
+        if(inputCode.length !== 4) {
+            errorDiv.textContent = "Le code doit contenir exactement 4 chiffres.";
+            errorDiv.style.display = 'block';
+            return;
+        }
+        
+        // On change le bouton pour montrer que ça charge
+        const originalText = btnValidateOtp.innerHTML;
+        btnValidateOtp.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Vérification...';
+        btnValidateOtp.disabled = true;
+        errorDiv.style.display = 'none';
+        
+        try {
+            // A. On interroge Supabase pour lire le VRAI code du RDV
+            const { data: rdvData, error: fetchError } = await window.supabaseClient
+                .from('rendez_vous')
+                .select('code_consultation')
+                .eq('id', currentValidationRdvId)
+                .single();
+                
+            if (fetchError || !rdvData) throw new Error("Erreur de connexion avec la base de données.");
+            
+            // B. On compare le code tapé avec celui de la base de données
+            if (rdvData.code_consultation !== inputCode) {
+                // Mauvais code ! On bloque !
+                errorDiv.textContent = "Code incorrect. Veuillez demander le bon code au patient.";
+                errorDiv.style.display = 'block';
+                btnValidateOtp.innerHTML = originalText;
+                btnValidateOtp.disabled = false;
+                return;
+            }
+            
+            // C. LE CODE EST BON ! On donne l'argent et on ferme le RDV
+            await window.supabaseClient.from('rendez_vous').update({ statut: 'termine' }).eq('id', currentValidationRdvId);
+            
+            const { data: { user } } = await window.supabaseClient.auth.getUser();
+            const { data: medecin } = await window.supabaseClient.from('medecins').select('solde_wallet').eq('id', user.id).single();
+            
+            const nouveauSolde = (medecin.solde_wallet || 0) + currentValidationMontant;
+            await window.supabaseClient.from('medecins').update({ solde_wallet: nouveauSolde }).eq('id', user.id);
+            
+            alert(`✅ Succès ! Code validé.\n\n${currentValidationMontant.toLocaleString('fr-FR')} FCFA ont été ajoutés à votre portefeuille.`);
+            window.location.reload();
+            
+        } catch(e) {
+            errorDiv.textContent = "Une erreur serveur est survenue.";
+            errorDiv.style.display = 'block';
+            btnValidateOtp.innerHTML = originalText;
+            btnValidateOtp.disabled = false;
+            console.error(e);
+        }
+    });
+}
+
+// ==================================================
+// LE RESTE DES FONCTIONS (INCHANGÉES)
+// ==================================================
+
 window.showDocRdvDetails = function(rdvId) {
     const rdv = rdvDocDataMap[rdvId];
     if (!rdv) return;
@@ -194,7 +281,6 @@ window.showDocRdvDetails = function(rdvId) {
     const heureFormatee = dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
     document.getElementById('doc-modal-date').textContent = `${dateFormatee.charAt(0).toUpperCase() + dateFormatee.slice(1)} à ${heureFormatee}`;
 
-    // On prépare le contenu visuel
     const isDomicile = rdv.type_consultation === 'domicile';
     document.getElementById('doc-modal-type-badge').innerHTML = isDomicile 
         ? '<span class="badge bg-danger fs-6 px-3 py-2 rounded-pill"><i class="fas fa-ambulance me-2"></i>Visite à Domicile demandée</span>'
@@ -221,22 +307,28 @@ window.showDocRdvDetails = function(rdvId) {
 
     document.getElementById('doc-modal-content').innerHTML = contentHtml;
 
-    // On prépare les boutons d'action avec les événements onclick
-    document.getElementById('doc-modal-footer-actions').innerHTML = `
-        <button type="button" class="btn btn-outline-danger" onclick="updateRdvStatus('${rdv.id}', 'annule')">Refuser</button>
-        <button type="button" class="btn btn-success fw-bold px-4" onclick="updateRdvStatus('${rdv.id}', 'confirme')">Accepter la demande</button>
-    `;
+    if (rdv.statut_paiement === 'en_attente') {
+        document.getElementById('doc-modal-footer-actions').innerHTML = `
+            <div class="w-100 text-center text-warning fw-bold p-2 bg-warning bg-opacity-10 rounded">
+                <i class="fas fa-hourglass-half me-2"></i>En attente du paiement par le patient
+            </div>
+        `;
+    } else {
+        document.getElementById('doc-modal-footer-actions').innerHTML = `
+            <button type="button" class="btn btn-outline-danger" onclick="updateRdvStatus('${rdv.id}', 'annule')">Refuser</button>
+            <button type="button" class="btn btn-success fw-bold px-4" onclick="updateRdvStatus('${rdv.id}', 'confirme')">Accepter la demande</button>
+        `;
+    }
 
     const modal = new bootstrap.Modal(document.getElementById('docRdvDetailsModal'));
     modal.show();
 };
 
-// NOUVELLE FONCTION : Mettre à jour le statut depuis le Modal
 window.updateRdvStatus = async function(rdvId, action) {
     if (confirm(`Voulez-vous vraiment ${action === 'confirme' ? 'accepter' : 'refuser'} ce rendez-vous ?`)) {
         const { error } = await window.supabaseClient.from('rendez_vous').update({ statut: action }).eq('id', rdvId);
         if (!error) {
-            window.location.reload(); // On rafraîchit la page pour voir les nouveaux boutons (Dossier, WhatsApp)
+            window.location.reload(); 
         } else {
             alert("Une erreur est survenue.");
         }
@@ -260,17 +352,14 @@ function setupDoctorUI() {
     const dropdownMenu = document.querySelector('.dropdown-navbar-menu');
 
     if (userWidget && dropdownMenu) {
-        // Ouvre/Ferme le menu au CLIC sur le widget
         userWidget.addEventListener('click', (event) => {
-            event.stopPropagation(); // Empêche le clic de se propager au document
+            event.stopPropagation(); 
             dropdownMenu.classList.toggle('show');
         });
     }
 
-    // Ferme le menu si on clique en dehors
     window.addEventListener('click', (event) => {
         if (dropdownMenu && dropdownMenu.classList.contains('show')) {
-            // Vérifie que le clic n'a pas eu lieu dans le menu lui-même
             if (!dropdownMenu.contains(event.target) && !userWidget.contains(event.target)) {
                 dropdownMenu.classList.remove('show');
             }
@@ -286,7 +375,6 @@ function setupDoctorUI() {
         });
     }
 
-    // === GESTION DU MENU BURGER MOBILE (SIDEBAR) ===
     const toggleBtn = document.querySelector('.toggle');
     const sidebar = document.querySelector('.sidebar');
     const iconOuvrir = document.querySelector('.ouvrir');
@@ -294,9 +382,8 @@ function setupDoctorUI() {
 
     if (toggleBtn && sidebar) {
         toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('active'); // Fait glisser la sidebar
+            sidebar.classList.toggle('active'); 
 
-            // Alterne l'affichage entre les 3 barres et la croix
             if (sidebar.classList.contains('active')) {
                 if (iconOuvrir) iconOuvrir.style.display = 'none';
                 if (iconFermer) iconFermer.style.display = 'block';
@@ -306,7 +393,6 @@ function setupDoctorUI() {
             }
         });
 
-        // Optionnel : Fermer le menu si on clique sur un lien sur mobile
         const sidebarLinks = sidebar.querySelectorAll('a');
         sidebarLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -324,15 +410,11 @@ async function calculateMonthlyRevenue() {
     const { data: { user } } = await window.supabaseClient.auth.getUser();
     if (!user) return;
 
-    const date = new Date();
-    const premierJourDuMois = new Date(date.getFullYear(), date.getMonth(), 1).toISOString();
-
-    const { data: factures, error } = await window.supabaseClient
-        .from('factures')
-        .select('montant')
-        .eq('medecin_id', user.id)
-        .eq('statut', 'payee')
-        .gte('created_at', premierJourDuMois); 
+    const { data: medecin, error } = await window.supabaseClient
+        .from('medecins')
+        .select('solde_wallet')
+        .eq('id', user.id)
+        .single(); 
 
     const revenueContainer = document.getElementById('monthly-revenue-container'); 
     const summaryRevenueContainer = document.getElementById('summary-revenue'); 
@@ -343,18 +425,104 @@ async function calculateMonthlyRevenue() {
         return;
     }
 
-    let totalMensuel = 0;
-    if (factures && factures.length > 0) {
-        factures.forEach(fac => {
-            totalMensuel += Number(fac.montant); 
-        });
+    const solde = medecin.solde_wallet || 0;
+    const formattedTotal = `${solde.toLocaleString('fr-FR')} FCFA`;
+
+    if(revenueContainer) {
+        revenueContainer.innerHTML = `
+            <h2 class="text-success fw-bold mb-3">${formattedTotal}</h2>
+            <button class="btn btn-sm btn-outline-success fw-bold w-100 py-2" onclick="demanderRetrait()">
+                <i class="fas fa-money-bill-wave me-2"></i>Demander un virement
+            </button>
+        `;
+    }
+    
+    if(summaryRevenueContainer) {
+        summaryRevenueContainer.textContent = formattedTotal;
+        const titreCard = summaryRevenueContainer.previousElementSibling;
+        if(titreCard) titreCard.innerHTML = '<i class="fas fa-wallet me-2"></i>Solde Disponible';
+    }
+}
+
+// ==========================================
+// SYSTÈME DE RETRAIT D'ARGENT
+// ==========================================
+let soldeActuelMedecin = 0;
+
+window.demanderRetrait = async function() {
+    // 1. Récupérer le solde exact avant d'ouvrir le Modal
+    const { data: { user } } = await window.supabaseClient.auth.getUser();
+    const { data: medecin } = await window.supabaseClient.from('medecins').select('solde_wallet').eq('id', user.id).single();
+    
+    soldeActuelMedecin = medecin.solde_wallet || 0;
+
+    if (soldeActuelMedecin <= 0) {
+        alert("Votre solde est de 0 FCFA. Vous ne pouvez pas faire de retrait.");
+        return;
     }
 
-    const formattedTotal = `${totalMensuel.toLocaleString('fr-FR')} FCFA`;
+    // 2. Afficher le solde dans le Modal et l'ouvrir
+    document.getElementById('modal-solde-dispo').textContent = `${soldeActuelMedecin.toLocaleString('fr-FR')} FCFA`;
+    document.getElementById('retrait-numero').value = '';
+    document.getElementById('retrait-error').style.display = 'none';
 
-    if(revenueContainer) revenueContainer.innerHTML = `<h2 class="text-success fw-bold">${formattedTotal}</h2>`;
-    if(summaryRevenueContainer) summaryRevenueContainer.textContent = formattedTotal;
-}
+    const modal = new bootstrap.Modal(document.getElementById('retraitModal'));
+    modal.show();
+};
+
+// Écouteur sur le bouton de validation du retrait
+document.addEventListener('DOMContentLoaded', () => {
+    const btnValiderRetrait = document.getElementById('btn-valider-retrait');
+    
+    if (btnValiderRetrait) {
+        btnValiderRetrait.addEventListener('click', async () => {
+            const methode = document.getElementById('retrait-methode').value;
+            const numero = document.getElementById('retrait-numero').value.trim();
+            const errorDiv = document.getElementById('retrait-error');
+
+            if (!numero) {
+                errorDiv.textContent = "Veuillez entrer un numéro de compte valide.";
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // On change le bouton pour montrer que ça charge
+            const originalText = btnValiderRetrait.innerHTML;
+            btnValiderRetrait.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Traitement...';
+            btnValiderRetrait.disabled = true;
+            errorDiv.style.display = 'none';
+
+            try {
+                const { data: { user } } = await window.supabaseClient.auth.getUser();
+
+                // 1. Créer la demande dans la base de données
+                const { error: insertError } = await window.supabaseClient
+                    .from('demandes_retrait')
+                    .insert([{
+                        medecin_id: user.id,
+                        montant: soldeActuelMedecin,
+                        methode_paiement: methode,
+                        numero_compte: numero
+                    }]);
+
+                if (insertError) throw new Error("Erreur lors de la création de la demande.");
+
+                // 2. Mettre le solde du médecin à 0 (l'argent est "en cours de transfert")
+                await window.supabaseClient.from('medecins').update({ solde_wallet: 0 }).eq('id', user.id);
+
+                alert("✅ Votre demande a bien été envoyée ! Votre solde est mis à jour. L'administration EMSTE va procéder au virement sous 48h.");
+                window.location.reload();
+
+            } catch (e) {
+                errorDiv.textContent = "Une erreur serveur est survenue.";
+                errorDiv.style.display = 'block';
+                btnValiderRetrait.innerHTML = originalText;
+                btnValiderRetrait.disabled = false;
+                console.error(e);
+            }
+        });
+    }
+});
 
 async function checkUnreadMessages() {
     const { data: { user } } = await window.supabaseClient.auth.getUser();
