@@ -28,7 +28,7 @@ async function renderNavbar() {
             <a class="nav-link ${getActiveClass('index.html')}" href="index.html">Accueil</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link ${getActiveClass('domicile.html')}" href="index.html#services">Services & Domicile</a>
+            <a class="nav-link ${getActiveClass('domicile.html')}" href="nouveau-rdv.html">Consultations en ligne</a>
         </li>
         <li class="nav-item">
             <a class="nav-link ${getActiveClass('boutique.html')}" href="boutique.html"><i class="fas fa-shopping-cart me-1"></i>Matériel Médical</a>

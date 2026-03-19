@@ -352,9 +352,14 @@ async function fetchOrdonnances() {
                         <div class="bg-light p-3 rounded mt-2 border">
                             <span style="white-space: pre-line; color: #333;">${cons.ordonnance}</span>
                         </div>
-                        <button class="btn btn-sm btn-outline-danger mt-3 w-100 fw-bold" onclick="downloadOrdonnancePDF('${cons.id}')">
-                            <i class="fas fa-file-pdf me-2"></i>Télécharger (PDF)
-                        </button>
+                        <div class="d-flex gap-2 mt-3">
+                            <button class="btn btn-sm btn-outline-primary flex-grow-1 fw-bold" onclick="downloadOrdonnancePDF('${cons.id}')">
+                                <i class="fas fa-download me-2"></i>Télécharger
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger flex-grow-1 fw-bold" onclick="deleteOrdonnance('${cons.id}')">
+                                <i class="fas fa-trash-alt me-2"></i>Supprimer
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -394,6 +399,29 @@ window.downloadOrdonnancePDF = function(consultationId) {
 
         html2pdf().set(opt).from(element).save();
     } catch (e) { console.error(e); }
+};
+
+window.deleteOrdonnance = async function(consultationId) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer cette ordonnance ? Cette action est définitive.")) {
+        try {
+            // On ne supprime pas la consultation entière pour garder l'historique médical
+            // On "vide" juste le champ ordonnance en le mettant à null
+            const { error } = await window.supabaseClient
+                .from('consultations')
+                .update({ ordonnance: null })
+                .eq('id', consultationId);
+
+            if (error) throw error;
+
+            // On rafraîchit les listes en direct
+            fetchOrdonnances(); // Met à jour l'onglet "Mes ordonnances"
+            fetchMedicalRecord(); // Met à jour l'onglet "Dossier Médical"
+            
+        } catch (error) {
+            console.error("Erreur lors de la suppression de l'ordonnance:", error);
+            alert("Une erreur est survenue lors de la suppression.");
+        }
+    }
 };
 
 // ==========================================

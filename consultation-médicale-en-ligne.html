@@ -15,23 +15,21 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container-fluid px-4 px-lg-5 mt-2">
-        <a class="navbar-brand d-flex align-items-center" href="index.html">
-            <div class="logo-icon me-2">
-                <i class="fas fa-stethoscope"></i>
+    <nav class="navbar navbar-expand-lg fixed-top bg-white shadow-sm">
+        <div class="container-fluid px-4 px-lg-5 mt-2 mb-2">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <div class="logo-icon me-2"><i class="fas fa-stethoscope text-primary"></i></div>
+                <span class="text-dark fw-bold">EMSTE</span>
+            </a>
+            <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav menu" id="dynamic-nav-menu"></ul>
+                <div class="btn-nav ms-auto gap-2 d-flex" id="dynamic-nav-buttons"></div>
             </div>
-            MediConnect CI
-        </a>
-        <button class="navbar-toggler bg-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Menu">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav menu" id="dynamic-nav-menu"></ul>
-            <div class="btn-nav ms-auto" id="dynamic-nav-buttons"></div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <section class="hero-section">
         <div class="container">
@@ -172,17 +170,17 @@
         </div>
     </section>
 
-    <footer class="bg-primary text-white py-5 pt-5">
-        <div class="container bg-primary-dark container-footer">
+    <footer class="text-white">
+        <div class="container bg-primary-white container-footer">
             <div class="row g-4 row-footer">
                 <div class="col-lg-4">
                     <div class="d-flex align-items-center mb-3">
                         <div class="logo-icon me-2">
                             <i class="fas fa-stethoscope"></i>
                         </div>
-                        <h5 class="mb-0">MediConnect CI</h5>
+                        <h5 class="mb-0">EMSTE</h5>
                     </div>
-                    <p class="text-muted">
+                    <p class="text-white">
                         La première plateforme de consultation médicale en ligne en Côte d'Ivoire. 
                         Connectez-vous facilement avec des professionnels de santé qualifiés.
                     </p>
@@ -191,26 +189,26 @@
                 <div class="col-lg-2">
                     <h6 class="text-uppercase fw-bold">Liens rapides</h6>
                     <ul class="list-unstyled">
-                        <li><a href="index.html" class="text-muted text-decoration-none">Accueil</a></li>
-                        <li><a href="#services" class="text-muted text-decoration-none">Services</a></li>
-                        <li><a href="register.html" class="text-muted text-decoration-none">Inscription</a></li>
-                        <li><a href="contact.html" class="text-muted text-decoration-none">Contact</a></li>
+                        <li><a href="index.html" class="text-white text-decoration-none">Accueil</a></li>
+                        <li><a href="domicile.html" class="text-white text-decoration-none">Consultation a domicile</a></li>
+                        <li><a href="nouveau-rdv.html" class="text-white text-decoration-none">Consultation en ligne</a></li>
+                        <li><a href="registre.html" class="text-white text-decoration-none">Inscription</a></li>
+                        <li><a href="contact.html" class="text-white text-decoration-none">Contact</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-3">
                     <h6 class="text-uppercase fw-bold">Support</h6>
                     <ul class="list-unstyled">
-                        <li><a href="#" class="text-muted text-decoration-none">Centre d'aide</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">FAQ</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Politique de confidentialité</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">Conditions d'utilisation</a></li>
+                        <li><a href="aide.html" class="text-white text-decoration-none">Centre d'aide</a></li>
+                        <li><a href="confidentialite.html" class="text-white text-decoration-none">Politique de confidentialité</a></li>
+                        <li><a href="cgu.html" class="text-white text-decoration-none">Conditions d'utilisation</a></li>
                     </ul>
                 </div>
                 
                 <div class="col-lg-3">
                     <h6 class="text-uppercase fw-bold">Contact</h6>
-                    <ul class="list-unstyled text-muted">
+                    <ul class="list-unstyled text-white">
                         <li><i class="fas fa-envelope me-2"></i>support@mediconnect-ci.com</li>
                         <li><i class="fas fa-phone me-2"></i>+225 XX XX XX XX XX</li>
                         <li><i class="fas fa-map-marker-alt me-2"></i>Abidjan, Côte d'Ivoire</li>
@@ -221,10 +219,15 @@
             <hr class="my-4">
             
             <div class="text-center">
-                <p class="text-muted mb-0">
-                    © 2025 MediConnect CI. Tous droits réservés.
+                <p class="text-white mb-0">
+                    © 2026 EMSTE. Tous droits réservés.
                 </p>
             </div>
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="navbar.js"></script>
+</body>
+</html>

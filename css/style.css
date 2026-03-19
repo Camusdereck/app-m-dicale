@@ -1482,7 +1482,7 @@ footer hr { border-color: rgba(255,255,255,.15); margin: 2rem 0 1rem; }
 
 /* Sidebar brand */
 .sidebar::before {
-  content: 'MediConnect CI';
+  content: 'EMSTE';
   display: block;
   font-family: var(--font-display);
   font-weight: 800;
