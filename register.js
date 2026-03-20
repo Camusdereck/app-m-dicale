@@ -45,7 +45,7 @@ async function handleSignUp(userData, table, submitBtn) {
     submitBtn.disabled = true;
 
     try {
-        // 1. Création dans Auth (Le système de sécurité de Supabase)
+        // 1. Création dans Auth (Supabase envoie l'e-mail de confirmation automatiquement ici)
         const { data: authData, error: authError } = await window.supabaseClient.auth.signUp({
             email: userData.email,
             password: userData.password,
@@ -53,7 +53,7 @@ async function handleSignUp(userData, table, submitBtn) {
 
         if (authError) throw authError;
 
-        // 2. Préparation des données (on enlève le mot de passe, Supabase Auth le gère déjà)
+        // 2. Préparation des données pour la base de données
         const profileData = { ...userData, id: authData.user.id };
         delete profileData.password; 
 
@@ -64,16 +64,34 @@ async function handleSignUp(userData, table, submitBtn) {
 
         if (dbError) throw dbError;
 
-        // Succès ! Redirection propre vers la connexion
-        alert("✅ Inscription réussie ! Vous pouvez maintenant vous connecter.");
-        window.location.href = "connexion.html"; 
+        // NOUVEAU MESSAGE DE SUCCÈS
+        alert("✅ Inscription réussie ! Un code de confirmation a été envoyé à " + userData.email + ". Veuillez vérifier vos e-mails (et vos spams).");
+        
+        window.location.href = "verification.html?email=" + encodeURIComponent(userData.email);
 
     } catch (err) {
         alert("Erreur lors de l'inscription : " + err.message);
         console.error(err);
         
-        // En cas d'erreur, on remet le bouton à la normale
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     }
 }
+
+
+// Fonction pour afficher/masquer le mot de passe
+window.togglePassword = function(inputId) {
+    const input = document.getElementById(inputId);
+    // On cible l'icône <i> à l'intérieur du bouton qui suit l'input
+    const icon = input.nextElementSibling.querySelector('i'); 
+
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash'); // Change l'icône en œil barré
+    } else {
+        input.type = "password";
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye'); // Remet l'œil normal
+    }
+};

@@ -111,10 +111,24 @@ window.selectContact = function(contactId, contactName, element) {
     
     document.getElementById('message-input').disabled = false;
     document.getElementById('send-btn').disabled = false;
-    document.getElementById('attach-btn').disabled = false; // NOUVEAU : Activer le trombone
+    document.getElementById('attach-btn').disabled = false;
+
+    // === GESTION DU MOBILE : Cacher la liste et afficher le chat ===
+    if (window.innerWidth < 768) {
+        document.getElementById('contacts-container').classList.add('d-none');
+        document.getElementById('chat-area').classList.remove('d-none');
+        document.getElementById('chat-area').classList.add('d-flex');
+    }
 
     loadMessages();
 }
+
+// === FONCTION DU BOUTON RETOUR (Sur Mobile) ===
+window.showContactsList = function() {
+    document.getElementById('chat-area').classList.remove('d-flex');
+    document.getElementById('chat-area').classList.add('d-none');
+    document.getElementById('contacts-container').classList.remove('d-none');
+};
 
 async function loadMessages() {
     if (!selectedContactId) return;

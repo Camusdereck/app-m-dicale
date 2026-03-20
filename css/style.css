@@ -799,11 +799,12 @@ ul { list-style: none; padding: 0; margin: 0; }
 /* ==========================================================================
    8. SECTION ONGLETS (TABS)
    ========================================================================== */
-.tab-container input[type="radio"] { display: none; }
+.tabs-container input[type="radio"] { display: none; }
 
 .tabs-container {
   background: var(--gradient-section);
   padding-bottom: 1rem;
+  list-style: none !important;
 }
 
 /* Barre des boutons */
@@ -816,7 +817,7 @@ ul { list-style: none; padding: 0; margin: 0; }
   justify-content: center;
   padding: 2rem 1.5rem 1.5rem;
   background: transparent;
-  list-style: none; /* SUPPRIME LES POINTS */
+  list-style: none !important; /* SUPPRIME LES POINTS */
   flex-wrap: wrap;
 }
 
@@ -825,6 +826,7 @@ ul { list-style: none; padding: 0; margin: 0; }
     border-radius: 2rem;
     padding: 0.5rem;
     color: white;
+    list-style: none !important;
 }
 
 .tab-boutton:hover {
@@ -2629,14 +2631,16 @@ span.badge.text-bg-info {
   .pourtel{
     display: block;
     align-items: center;
-     justify-content: center; 
+     justify-content: center;
+     margin-right: -2rem; 
   }
 
   .engagement2 { 
     display: none; 
 }
 .pourtel img { 
-    max-width: 90%; 
+    max-width: 100%; 
+    
 }
   
 
@@ -2681,6 +2685,92 @@ span.badge.text-bg-info {
   /* Dashboard */
   .dashboard-container { padding: 1rem; }
   .dashbord-hero-title  { font-size: 1.3rem; }
+
+  .topbar-dashbord {
+        position: fixed !important;
+        top: 0 !important; 
+        left: 0 !important; 
+        right: 0 !important;
+        width: 100% !important;
+        height: 60px !important;
+        background: #ffffff !important;
+        border-bottom: 1px solid #e5e5e5 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0 1rem !important;
+        z-index: 1050 !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+    }
+
+    /* Réorganisation Flexbox de la topbar */
+.topbar-dashbord .toggle {
+        order: 1 !important; /* Menu à gauche */
+        font-size: 1.8rem;
+        color: #333;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+}
+
+.topbar-dashbord .topbar-left {
+        order: 2 !important; /* Titre au centre */
+        flex: 1;
+        font-size: 1.1rem !important;
+        font-weight: 700 !important;
+        color: var(--color-primary-dark) !important;
+}
+
+.topbar-dashbord .dropdown-navbar {
+        order: 3 !important; /* Profil à droite */
+}
+
+    /* Nettoyage de la "pilule" utilisateur */
+.user-widget {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+}
+.user-info, .user-icon { 
+        display: none !important; /* On cache le nom et la flèche */
+}
+.user-avatar { 
+        width: 32px !important; 
+        height: 32px !important; 
+        margin: 0 !important; 
+}
+
+    /* 2. CORRECTION DU CHEVAUCHEMENT (Éléments cachés) */
+.dashboard-container {
+        margin-top: 60px !important; /* On descend le contenu sous la topbar */
+        padding: 1.5rem 1rem !important; 
+}
+
+    /* 3. RÉDUCTION DE LA SIDEBAR */
+.sidebar {
+        width: 270px !important; /* Plus fine au lieu de 100% */
+        top: 60px !important; /* Commence sous la topbar */
+        height: calc(100vh - 60px) !important;
+        padding: 1.5rem 1rem !important;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.1) !important;
+}
+
+    /* 4. CORRECTION DES BOUTONS (Détails / Annuler) */
+    /* Ces règles ciblent les boutons générés par ton JavaScript */
+.list-group-item .d-flex.justify-content-end,.list-group-item div[style*="gap: 10px"] {
+        gap: 8px !important;
+        flex-wrap: wrap !important;
+}
+    
+.list-group-item button {
+        padding: 6px 14px !important;
+        font-size: 0.85rem !important;
+        flex: 0 1 auto !important; /* Empêche de prendre toute la largeur */
+        margin-bottom: 4px;
+}
   
 
   /* Messagerie */
