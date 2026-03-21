@@ -126,45 +126,82 @@ async function processWhatsappOrder(grandTotalStr) {
     renderCart();
 }
 
-// --- OPTION 2 : PAYER EN LIGNE (WAVE, MTN, ORANGE MONEY) ---
+// --- OPTION 2 : PAYER EN LIGNE (SÉCURISÉ) ---
 async function processOnlinePayment() {
     if (!currentUserData || !currentUserData.email) {
         alert("Erreur : Email introuvable pour le paiement.");
         return;
     }
 
+    const payBtn = document.getElementById('pay-online-btn');
+    if(payBtn) {
+        payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Préparation...';
+        payBtn.disabled = true;
+    }
+
+    // 1. On crée la commande "en attente" dans Supabase D'ABORD
+    const { data: commandeCreee, error } = await window.supabaseClient
+        .from('commandes')
+        .insert([{
+            patient_id: currentUserData.id,
+            montant_total: cartTotal,
+            statut_paiement: 'en_attente', // L'argent n'est pas encore là
+            details: cartDetailsText
+        }])
+        .select()
+        .single();
+
+    if (error || !commandeCreee) {
+        alert("Erreur lors de la création de la commande.");
+        console.error(error);
+        if(payBtn) {
+            payBtn.innerHTML = '<i class="fas fa-credit-card me-2"></i>Payer en ligne sécurisé';
+            payBtn.disabled = false;
+        }
+        return;
+    }
+
+    // 2. On lance le paiement avec l'ID de la commande
     let handler = PaystackPop.setup({
-        key: 'pk_live_54950319772acc4e08a83f4e5946f6b1760ed17e', // Clé de test
+        key: 'pk_live_54950319772acc4e08a83f4e5946f6b1760ed17e',
         email: currentUserData.email,
         amount: cartTotal * 100, 
         currency: 'XOF',
         ref: 'CMD_' + Math.floor((Math.random() * 1000000000) + 1),
-        callback: function(response) {
-            (async () => {
-                // 1. Enregistre la commande dans Supabase
-                const { error } = await window.supabaseClient
-                    .from('commandes')
-                    .insert([{
-                        patient_id: currentUserData.id,
-                        montant_total: cartTotal,
-                        statut_paiement: 'paye_en_ligne',
-                        details: cartDetailsText
-                    }]);
-
-                if (error) {
-                    alert("Erreur lors de la création de la commande. Contactez le support.");
-                    console.error(error);
-                } else {
-                    alert("✅ Paiement réussi ! Votre commande a été enregistrée. Référence : " + response.reference);
-                    // 2. Vide le panier
-                    await clearEntireCart();
-                    // 3. Recharge l'affichage
-                    renderCart();
+        
+        // --- CORRECTION SÉCURITÉ ---
+        metadata: {
+            custom_fields: [
+                {
+                    display_name: "Type",
+                    variable_name: "type_paiement",
+                    value: "commande_boutique"
+                },
+                {
+                    display_name: "Commande ID",
+                    variable_name: "commande_id",
+                    value: commandeCreee.id // L'ID réel de la commande
                 }
+            ]
+        },
+        
+        callback: function(response) {
+            // --- CORRECTION SÉCURITÉ ---
+            // Le JS ne valide pas la commande. Le webhook le fera.
+            (async () => {
+                alert("✅ Paiement initié ! La validation de votre commande (Réf: " + response.reference + ") est en cours de traitement.");
+                
+                // On vide le panier puisque la commande est passée
+                await clearEntireCart();
+                renderCart();
             })();
         },
         onClose: function() {
-            alert("Paiement annulé. Vos articles sont toujours dans le panier.");
+            alert("Paiement annulé. Vous pouvez réessayer plus tard.");
+            if(payBtn) {
+                payBtn.innerHTML = '<i class="fas fa-credit-card me-2"></i>Payer en ligne sécurisé';
+                payBtn.disabled = false;
+            }
         }
     });
 

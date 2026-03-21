@@ -204,7 +204,7 @@ async function fetchAppointments() {
 }
 
 // ==========================================
-// 3. GÉNÉRATION DU CODE OTP (LORS DU PAIEMENT)
+// 3. PAIEMENT SÉCURISÉ DES RDV EN ATTENTE
 // ==========================================
 window.simulerPaiement = async function(rdvId, montant) {
     const { data: { user } } = await window.supabaseClient.auth.getUser();
@@ -218,29 +218,32 @@ window.simulerPaiement = async function(rdvId, montant) {
         email: user.email,
         amount: montant * 100, 
         currency: 'XOF', 
-        ref: 'MDC_' + Math.floor((Math.random() * 1000000000) + 1), 
-        callback: function(response) {
-            (async () => {
-                // On génère un code secret à 4 chiffres (entre 1000 et 9999)
-                const codeGenere = Math.floor(1000 + Math.random() * 9000).toString();
-
-                // On met à jour le RDV avec le paiement ET le code secret
-                const { error } = await window.supabaseClient
-                    .from('rendez_vous')
-                    .update({ 
-                        statut_paiement: 'paye_plateforme',
-                        code_consultation: codeGenere
-                    })
-                    .eq('id', rdvId);
-
-                if (!error) {
-                    alert('Paiement réussi ! Votre code secret a été généré.');
-                    window.location.reload(); 
-                } else {
-                    alert("Paiement réussi, mais erreur de mise à jour du rendez-vous.");
-                    console.error(error);
+        ref: 'MDC_' + Math.floor((Math.random() * 1000000000) + 1),
+        
+        // --- CORRECTION SÉCURITÉ ---
+        // On attache l'ID du RDV pour que le webhook de Supabase sache quoi valider
+        metadata: {
+            custom_fields: [
+                {
+                    display_name: "Type",
+                    variable_name: "type_paiement",
+                    value: "rendez_vous"
+                },
+                {
+                    display_name: "Rendez-vous ID",
+                    variable_name: "rdv_id",
+                    value: rdvId
                 }
-            })();
+            ]
+        },
+        
+        callback: function(response) {
+            // --- CORRECTION SÉCURITÉ ---
+            // Le JavaScript NE FAIT PLUS LA MISE À JOUR (plus de update statut_paiement).
+            // Le webhook de Paystack va s'en charger en arrière-plan de façon sécurisée.
+            
+            alert('Paiement initié avec succès ! La confirmation est en cours de traitement. Votre code secret apparaîtra d\'ici quelques instants.');
+            window.location.reload(); 
         },
         onClose: function() {
             alert('Vous avez annulé le paiement. Votre rendez-vous n\'est pas encore confirmé.');

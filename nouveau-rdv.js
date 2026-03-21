@@ -238,12 +238,12 @@ async function submitRdv() {
     const motif = document.getElementById('motif-input').value;
     const datetimeStr = `${dateStr}T${timeStr}:00`;
 
-    // Calculs financiers
     const montantTotal = selectedDoctorConfig.tarif_video;
     const margePlateforme = montantTotal * 0.20;
     const partMedecin = montantTotal - margePlateforme;
 
-    const { error } = await window.supabaseClient
+    // 1. On crée le RDV "en attente" dans la base de données et on récupère son ID
+    const { data: rdvCree, error } = await window.supabaseClient
         .from('rendez_vous')
         .insert([{
             patient_id: currentUser.id,
@@ -256,26 +256,63 @@ async function submitRdv() {
             montant_total: montantTotal,
             marge_plateforme: margePlateforme,
             part_medecin: partMedecin
-        }]);
+        }])
+        .select() // On demande à Supabase de nous renvoyer la ligne créée
+        .single();
 
-    if (error) {
-        alert("Erreur : " + error.message);
+    if (error || !rdvCree) {
+        alert("Erreur : " + (error ? error.message : 'Impossible de créer le RDV'));
         btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Confirmer la demande';
         btn.disabled = false;
-    } else {
-        btn.classList.replace('btn-primary', 'btn-success');
-        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Rendez-vous pré-réservé !';
-        
-        try {
-            const { data: patientData } = await window.supabaseClient.from('patients').select('telephone').eq('id', currentUser.id).single();
-            const medecinNom = document.getElementById('medecin-choisi-nom').textContent;
-            const dateJolie = new Date(datetimeStr).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
-
-            if (patientData && patientData.telephone && typeof envoyerSMSNotification === 'function') {
-                envoyerSMSNotification(patientData.telephone, dateJolie, medecinNom);
-            }
-        } catch (smsError) { console.error("Erreur SMS :", smsError); }
-
-        setTimeout(() => { window.location.href = './dashboard.html'; }, 1500);
+        return;
     }
+
+    // 2. On lance le paiement avec l'ID du RDV fraîchement créé
+    let handler = PaystackPop.setup({
+        key: 'pk_live_54950319772acc4e08a83f4e5946f6b1760ed17e',
+        email: currentUser.email,
+        amount: montantTotal * 100,
+        currency: 'XOF',
+        ref: 'MDC_' + Math.floor((Math.random() * 1000000000) + 1),
+        
+        // --- CORRECTION SÉCURITÉ ---
+        metadata: {
+            custom_fields: [
+                {
+                    display_name: "Type",
+                    variable_name: "type_paiement",
+                    value: "rendez_vous"
+                },
+                {
+                    display_name: "Rendez-vous ID",
+                    variable_name: "rdv_id",
+                    value: rdvCree.id // L'ID réel du RDV généré par Supabase
+                }
+            ]
+        },
+        
+        callback: function(response) {
+            // --- CORRECTION SÉCURITÉ ---
+            // On ne met pas à jour le RDV en JS. Le webhook s'en charge.
+            btn.classList.replace('btn-primary', 'btn-success');
+            btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>Paiement initié !';
+            
+            // Notification SMS (Optionnelle)
+            try {
+                const medecinNom = document.getElementById('medecin-choisi-nom').textContent;
+                const dateJolie = new Date(datetimeStr).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' }).replace(':', 'h');
+                if (currentUser.phone && typeof envoyerSMSNotification === 'function') {
+                    envoyerSMSNotification(currentUser.phone, dateJolie, medecinNom);
+                }
+            } catch (smsError) { console.error("Erreur SMS :", smsError); }
+
+            setTimeout(() => { window.location.href = './dashboard.html'; }, 1500);
+        },
+        onClose: function() {
+            alert('Paiement annulé. Le rendez-vous a été enregistré, vous pourrez le payer plus tard depuis votre tableau de bord.');
+            window.location.href = './dashboard.html';
+        }
+    });
+
+    handler.openIframe();
 }
