@@ -163,9 +163,9 @@ function subscribeToRealtimeMessages() {
         .subscribe();
 }
 
-// === PROTECTION ANTI-XSS ET SÉCURISATION DES FICHIERS ===
 async function appendMessageToUI(msg) {
     const chatBox = document.getElementById('chat-messages');
+    if (!chatBox) return;
     if (chatBox.innerHTML.includes('Aucun message')) chatBox.innerHTML = '';
 
     const isMe = msg.expediteur_id === currentUser.id;
@@ -174,8 +174,12 @@ async function appendMessageToUI(msg) {
 
     // 1. GESTION SÉCURISÉE DES PIÈCES JOINTES (URL Signées)
     if (msg.fichier_url) {
-        const filePath = msg.fichier_url.split('/pieces_jointes/')[1];
-        // On génère un lien temporaire de 5 minutes pour protéger la vie privée
+        // Nettoyage du chemin pour éviter l'erreur 400
+        let filePath = msg.fichier_url;
+        if (filePath.includes('pieces_jointes/')) {
+            filePath = filePath.split('pieces_jointes/')[1];
+        }
+
         const { data, error } = await window.supabaseClient.storage
             .from('pieces_jointes')
             .createSignedUrl(filePath, 300);
@@ -200,11 +204,11 @@ async function appendMessageToUI(msg) {
         }
     }
 
-    // 2. PROTECTION ANTI-XSS POUR LE TEXTE
+    // 2. PROTECTION ANTI-XSS POUR LE TEXTE (Utilisation de textContent)
     if (msg.contenu) {
         const textContent = document.createElement('div');
         textContent.className = 'text-dark';
-        textContent.textContent = msg.contenu; // <--- SÉCURITÉ CRITIQUE :textContent neutralise le code HTML
+        textContent.textContent = msg.contenu; 
         msgDiv.appendChild(textContent);
     }
 
@@ -223,55 +227,54 @@ async function sendMessage() {
     const input = document.getElementById('message-input');
     const sendBtn = document.getElementById('send-btn');
     const contenu = input.value.trim();
+    
     if (!contenu && !selectedFile) return;
 
     input.disabled = true;
     sendBtn.disabled = true;
+    const originalBtnHTML = sendBtn.innerHTML;
     sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
     let fichierUrl = null;
     let fichierType = null;
 
-    if (selectedFile) {
-        const cleanFileName = selectedFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
-        const filePath = `${currentUser.id}/${Date.now()}_${cleanFileName}`;
+    try {
+        if (selectedFile) {
+            const cleanFileName = selectedFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+            const filePath = `${currentUser.id}/${Date.now()}_${cleanFileName}`;
 
-        const { data: uploadData, error: uploadError } = await window.supabaseClient.storage
-            .from('pieces_jointes')
-            .upload(filePath, selectedFile);
+            const { data: uploadData, error: uploadError } = await window.supabaseClient.storage
+                .from('pieces_jointes')
+                .upload(filePath, selectedFile);
 
-        if (uploadError) {
-            alert("Erreur upload : " + uploadError.message);
-            input.disabled = false;
-            sendBtn.disabled = false;
-            sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-            return;
+            if (uploadError) throw uploadError;
+
+            fichierUrl = filePath; // On stocke le chemin relatif (plus sûr)
+            fichierType = selectedFile.type;
         }
 
-        // On stocke le chemin relatif, le lien signé sera généré à l'affichage
-        fichierUrl = `pieces_jointes/${filePath}`;
-        fichierType = selectedFile.type;
-    }
+        const { error: insertError } = await window.supabaseClient
+            .from('messages')
+            .insert([{
+                expediteur_id: currentUser.id,
+                destinataire_id: selectedContactId,
+                contenu: contenu || null,
+                fichier_url: fichierUrl,
+                fichier_type: fichierType
+            }]);
 
-    const { error } = await window.supabaseClient
-        .from('messages')
-        .insert([{
-            expediteur_id: currentUser.id,
-            destinataire_id: selectedContactId,
-            contenu: contenu || null,
-            fichier_url: fichierUrl,
-            fichier_type: fichierType
-        }]);
+        if (insertError) throw insertError;
 
-    if (!error) {
         input.value = ''; 
         clearFileSelection();
-    } else {
-        alert("Erreur envoi : " + error.message);
-    }
 
-    input.disabled = false;
-    sendBtn.disabled = false;
-    sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-    input.focus();
+    } catch (err) {
+        alert("Erreur lors de l'envoi : " + err.message);
+        console.error(err);
+    } finally {
+        input.disabled = false;
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = originalBtnHTML;
+        input.focus();
+    }
 }

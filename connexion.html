@@ -67,7 +67,6 @@
                                             type="button" 
                                             class="btn btn-outline-secondary" 
                                             id="togglePassword"
-                                            onclick="togglePasswordVisibility('password')"
                                         >
                                             <i class="fas fa-eye"></i>
                                         </button>
@@ -118,21 +117,6 @@
     <script src="supabaseClient.js"></script>
     <script src="connexion.js"></script>
 
-    <script>
-        function togglePasswordVisibility(inputId) {
-            const input = document.getElementById(inputId);
-            const icon = input.nextElementSibling.querySelector('i'); 
-            
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = "password";
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
-        }
-    </script>
+    
 </body>
 </html>
