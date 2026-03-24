@@ -1,4 +1,4 @@
-// admin.js - EMSTE Admin Dashboard
+// admin.js - EMSTE Admin Dashboard (VERSION COMPLÈTE ET OPTIMISÉE)
 
 document.addEventListener('DOMContentLoaded', async () => {
     const isAdmin = await checkAdminAccess();
@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadDashboardStats();
     loadDoctors();
     loadPatients(); 
-    loadFinances(); // Charge maintenant les vraies demandes de retrait
+    loadFinances();
     loadArticles();
     loadProduits();
 });
@@ -20,13 +20,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ==========================================
 // 1. SÉCURITÉ & UTILITAIRES
 // ==========================================
+// À remplacer tout en haut de admin.js
 async function checkAdminAccess() {
+    // On vérifie si quelqu'un est connecté
     const { data: { user }, error: authError } = await window.supabaseClient.auth.getUser();
     if (authError || !user) {
         window.location.href = './connexion.html';
         return false;
     }
 
+    // On vérifie si son email est bien dans la table 'admins'
     const { data: adminUser, error: dbError } = await window.supabaseClient
         .from('admins')
         .select('email')
@@ -34,26 +37,45 @@ async function checkAdminAccess() {
         .maybeSingle();
 
     if (dbError || !adminUser) {
-        alert("🔒 Accès refusé. Vous n'avez pas les droits d'administration.");
+        alert("🔒 Accès refusé. Espace réservé à la direction EMSTE.");
         window.location.href = './index.html'; 
         return false;
     }
+    
     return true; 
 }
 
+// ==========================================
+// FONCTION D'UPLOAD D'IMAGES (DÉFINITIVE)
+// ==========================================
 async function uploadImageToStorage(fileInputId, folderName) {
     const fileInput = document.getElementById(fileInputId);
-    if (!fileInput.files || fileInput.files.length === 0) return null;
+    if (!fileInput.files || fileInput.files.length === 0) {
+        throw new Error("Aucun fichier sélectionné.");
+    }
 
     const file = fileInput.files[0];
+    // Nettoyage du nom pour éviter les bugs avec les espaces ou accents
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Math.random().toString(36).substring(2, 15)}_${Date.now()}.${fileExt}`;
+    const cleanName = file.name.replace(/[^a-zA-Z0-9]/g, '').substring(0, 10);
+    const fileName = `${Date.now()}_${cleanName}.${fileExt}`;
     const filePath = `${folderName}/${fileName}`;
 
-    const { error } = await window.supabaseClient.storage.from('medias').upload(filePath, file);
-    if (error) throw error;
+    // Upload vers le bucket
+    const { error } = await window.supabaseClient.storage
+        .from('medias')
+        .upload(filePath, file, { cacheControl: '3600', upsert: false });
 
-    const { data: publicUrlData } = window.supabaseClient.storage.from('medias').getPublicUrl(filePath);
+    if (error) {
+        console.error("Erreur détaillée de l'upload:", error);
+        throw new Error("L'envoi de l'image a échoué. Vérifiez que le bucket 'medias' existe et est public.");
+    }
+
+    // Récupération de l'URL publique
+    const { data: publicUrlData } = window.supabaseClient.storage
+        .from('medias')
+        .getPublicUrl(filePath);
+        
     return publicUrlData.publicUrl;
 }
 
@@ -146,6 +168,24 @@ async function loadDoctors() {
     });
 }
 
+// FONCTION POUR LE BOUTON BOOSTER
+window.updateDoctorScore = async function(medecinId) {
+    const inputScore = document.getElementById(`score-${medecinId}`);
+    const nouveauScore = parseInt(inputScore.value) || 0;
+
+    const { error } = await window.supabaseClient
+        .from('medecins')
+        .update({ score_recherche: nouveauScore })
+        .eq('id', medecinId);
+
+    if (!error) {
+        alert("Le score du médecin a été mis à jour avec succès ! Il remontera dans les recherches.");
+        loadDoctors();
+    } else {
+        alert("Erreur lors de la mise à jour du score : " + error.message);
+    }
+};
+
 async function loadPatients() {
     const tbody = document.getElementById('admin-patients-list');
     const { data: patients, error } = await window.supabaseClient.from('patients').select('*').order('created_at', { ascending: false });
@@ -200,19 +240,16 @@ window.toggleUserStatus = async function(table, id, rendreActif) {
 async function loadFinances() {
     const tbody = document.getElementById('admin-finances-list');
     
-    // Marge EMSTE
     const { data: rdvs } = await window.supabaseClient.from('rendez_vous').select('marge_plateforme').eq('statut', 'termine');
     let totalMarge = 0;
     if (rdvs) rdvs.forEach(r => totalMarge += (r.marge_plateforme || 0));
     document.getElementById('total-marge-plateforme').textContent = totalMarge.toLocaleString('fr-FR') + ' FCFA';
 
-    // VRAIES DEMANDES DE RETRAIT
     const { data: demandes, error } = await window.supabaseClient
         .from('demandes_retrait')
         .select(`id, montant, methode_paiement, numero_compte, statut, created_at, medecins (first_name, last_name, email)`)
         .order('created_at', { ascending: false });
 
-    // Calcul de la dette (demandes en attente)
     let totaleDette = 0;
     if (demandes) {
         demandes.filter(d => d.statut === 'en_attente').forEach(d => totaleDette += (d.montant || 0));
@@ -395,7 +432,7 @@ window.deleteProduit = async function(id) {
 }
 
 // ==========================================
-// 7. MENU MOBILE
+// 7. MENU MOBILE (Gardé intact)
 // ==========================================
 const toggleBtn = document.getElementById('btn-toggle-admin');
 const sidebar = document.querySelector('.admin-sidebar');

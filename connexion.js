@@ -1,4 +1,4 @@
-// connexion.js - VERSION FINALE (Sécurisée avec redirection correcte)
+// connexion.js - VERSION DÉFINITIVE (Production)
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
@@ -10,82 +10,80 @@ document.addEventListener('DOMContentLoaded', () => {
         togglePasswordBtn.addEventListener('click', () => {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
-            
             const icon = togglePasswordBtn.querySelector('i');
-            if (type === 'text') {
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+            icon.className = type === 'text' ? 'fas fa-eye-slash' : 'fas fa-eye';
         });
     }
 
-    // Gérer la soumission du formulaire de connexion
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const emailInput = document.getElementById('email').value.trim();
+            const passwordInputStr = document.getElementById('password').value;
             const submitBtn = loginForm.querySelector('button[type="submit"]');
-
             const originalBtnText = submitBtn.innerHTML;
+
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Vérification...';
             submitBtn.disabled = true;
 
             try {
-                // 1. Authentification
+                // 1. Authentification globale (La porte principale)
                 const { data: authData, error: authError } = await window.supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password,
+                    email: emailInput,
+                    password: passwordInputStr,
                 });
 
                 if (authError) throw authError;
 
                 const userId = authData.user.id;
+                const userEmail = authData.user.email; // On utilise l'email validé par Supabase
 
-                // 2. Vérification Patient
-                const { data: patientData, error: patientError } = await window.supabaseClient
-                    .from('patients')
-                    .select('id')
-                    .eq('id', userId)
+                // 2. Vérification Super Admin (Le guichet direction)
+                const { data: adminData } = await window.supabaseClient
+                    .from('admins')
+                    .select('*')
+                    .eq('email', userEmail)
                     .maybeSingle();
 
-                if (patientData) {
-                    // C'est un patient ! Redirection vers dashboard.html
-                    window.location.href = 'dashboard.html';
+                if (adminData) {
+                    window.location.href = 'admin-dashboard.html';
                     return; 
                 }
 
-                // 3. Vérification Médecin
-                const { data: medecinData, error: medecinError } = await window.supabaseClient
+                // 3. Vérification Médecin (Le guichet médical)
+                const { data: medecinData } = await window.supabaseClient
                     .from('medecins')
                     .select('id')
                     .eq('id', userId)
                     .maybeSingle();
 
                 if (medecinData) {
-                    // C'est un médecin ! Redirection vers dashboard-medecin.html
                     window.location.href = 'dashboard-medecin.html';
                     return;
                 }
 
-                throw new Error("Votre profil est introuvable. Veuillez contacter le support.");
+                // 4. Vérification Patient (Le guichet public)
+                const { data: patientData } = await window.supabaseClient
+                    .from('patients')
+                    .select('id')
+                    .eq('id', userId)
+                    .maybeSingle();
 
-            } catch (err) {
-                let messageErreur = "Une erreur est survenue.";
-                
-                if (err.message === "Invalid login credentials") {
-                    messageErreur = "L'email ou le mot de passe est incorrect.";
-                } else {
-                    messageErreur = err.message;
+                if (patientData) {
+                    window.location.href = 'dashboard.html';
+                    return; 
                 }
 
+                // 5. Si le compte existe mais n'a aucun rôle assigné
+                throw new Error("Compte reconnu, mais aucun profil (Admin/Médecin/Patient) ne vous est assigné.");
+
+            } catch (err) {
+                let messageErreur = err.message;
+                if (messageErreur.includes("Invalid login credentials")) {
+                    messageErreur = "L'email ou le mot de passe est incorrect.";
+                }
                 alert("Erreur : " + messageErreur);
-                console.error(err);
-                
                 submitBtn.innerHTML = originalBtnText;
                 submitBtn.disabled = false;
             }
