@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const adresse = document.getElementById('adresse-input').value;
         const motif = document.getElementById('motif-input').value;
         const dateStr = document.getElementById('date-input').value;
-        const datetimeStr = `${dateStr}T08:00:00`; // Heure indicative pour domicile
+        const heureStr = document.getElementById('heure-input').value; // On récupère l'heure
+        const datetimeStr = `${dateStr}T${heureStr}:00`; // On combine les deux proprement
 
         // Calculs financiers pour le déplacement
         const margePlateforme = tarifSelectionne * 0.20;
