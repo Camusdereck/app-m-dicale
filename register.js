@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 phone: document.getElementById('patientPhone').value,
                 password: document.getElementById('patientPassword').value
             };
-            handleSignUp(data, 'patients', e.submitter); // e.submitter = le bouton cliqué
+            handleSignUp(data, 'patients', e.submitter);
         });
     }
 
@@ -26,11 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 last_name: document.getElementById('doctorLastName').value,
                 email: document.getElementById('doctorEmail').value,
                 phone: document.getElementById('doctorPhone').value,
-                
-                // LA CORRECTION EST ICI : on utilise la clé "specialite" pour matcher avec Supabase
-                // Et on pointe vers l'ID HTML "specialite" qu'on a corrigé tout à l'heure
                 specialite: document.getElementById('specialite').value, 
-                
                 order_number: document.getElementById('orderNumber').value, 
                 password: document.getElementById('doctorPassword').value
             };
@@ -39,59 +35,71 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// --- LE TRADUCTEUR D'ERREURS EN FRANÇAIS ---
+function translateError(msgEnAnglais) {
+    const errorMap = {
+        "Invalid login credentials": "L'email ou le mot de passe est incorrect.",
+        "User already registered": "Cet email est déjà utilisé par un autre compte.",
+        "Email rate limit exceeded": "Sécurité anti-spam : Trop d'essais. Veuillez réessayer dans une heure.",
+        "Password should be at least 6 characters": "Le mot de passe doit contenir au moins 6 caractères.",
+        "To security purposes, you can only request this after": "Veuillez patienter avant de faire une nouvelle demande."
+    };
+    return errorMap[msgEnAnglais] || msgEnAnglais; 
+}
+
+// --- FONCTION PRINCIPALE D'INSCRIPTION ---
 async function handleSignUp(userData, table, submitBtn) {
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Création en cours...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Création...';
     submitBtn.disabled = true;
 
     try {
-        // 1. Création dans Auth (Supabase envoie l'e-mail de confirmation automatiquement ici)
+        // 1. On crée le compte AUTH d'abord
         const { data: authData, error: authError } = await window.supabaseClient.auth.signUp({
             email: userData.email,
             password: userData.password,
         });
 
+        // Si erreur Supabase (ex: email déjà pris), on s'arrête ici proprement
         if (authError) throw authError;
 
-        // 2. Préparation des données pour la base de données
         const profileData = { ...userData, id: authData.user.id };
         delete profileData.password; 
 
-        // 3. Insertion dans la table publique (patients ou medecins)
+        // 2. On insère dans la base de données (patients ou medecins)
         const { error: dbError } = await window.supabaseClient
             .from(table)
             .insert([profileData]);
 
         if (dbError) throw dbError;
 
-        // NOUVEAU MESSAGE DE SUCCÈS
-        alert("✅ Inscription réussie ! Un code de confirmation a été envoyé à " + userData.email + ". Veuillez vérifier vos e-mails (et vos spams).");
-        
+        // 3. Succès !
+        alert("✅ Inscription réussie ! Un code de confirmation a été envoyé à " + userData.email + ".");
         window.location.href = "verification.html?email=" + encodeURIComponent(userData.email);
 
     } catch (err) {
-        alert("Erreur lors de l'inscription : " + err.message);
+        // On affiche l'erreur en français grâce à notre traducteur
+        alert("Attention : " + translateError(err.message));
         console.error(err);
         
+        // On remet le bouton à la normale
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     }
 }
 
-
-// Fonction pour afficher/masquer le mot de passe
+// Afficher/Masquer le mot de passe
 window.togglePassword = function(inputId) {
     const input = document.getElementById(inputId);
-    // On cible l'icône <i> à l'intérieur du bouton qui suit l'input
     const icon = input.nextElementSibling.querySelector('i'); 
 
     if (input.type === "password") {
         input.type = "text";
         icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash'); // Change l'icône en œil barré
+        icon.classList.add('fa-eye-slash');
     } else {
         input.type = "password";
         icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye'); // Remet l'œil normal
+        icon.classList.add('fa-eye');
     }
 };
