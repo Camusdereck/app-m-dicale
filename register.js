@@ -26,6 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 last_name: document.getElementById('doctorLastName').value,
                 email: document.getElementById('doctorEmail').value,
                 phone: document.getElementById('doctorPhone').value,
+                
+                // LA NOUVELLE INFO EST ICI 👇
+                commune: document.getElementById('doctorCommune').value, 
+                
                 specialite: document.getElementById('specialite').value, 
                 order_number: document.getElementById('orderNumber').value, 
                 password: document.getElementById('doctorPassword').value

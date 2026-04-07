@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const adresse = document.getElementById('adresse-input').value;
         const motif = document.getElementById('motif-input').value;
         const dateStr = document.getElementById('date-input').value;
-        const heureStr = document.getElementById('heure-input').value; // On récupère l'heure
-        const datetimeStr = `${dateStr}T${heureStr}:00`; // On combine les deux proprement
+        const heureStr = document.getElementById('heure-input').value; // Récupération de l'heure
+        const datetimeStr = `${dateStr}T${heureStr}:00`; // Combinaison propre
 
         // Calculs financiers pour le déplacement
         const margePlateforme = tarifSelectionne * 0.20;
@@ -65,11 +65,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             btn.classList.replace('btn-danger', 'btn-success');
             btn.innerHTML = '<i class="fas fa-check-double me-2"></i>Réservation confirmée !';
             
-            // Notification SMS !
+            // Notification SMS
             try {
                 const { data: patientData } = await window.supabaseClient.from('patients').select('telephone').eq('id', currentUser.id).single();
                 const medecinNom = document.getElementById('medecin-choisi-nom').textContent;
-                const dateJolie = new Date(datetimeStr).toLocaleDateString('fr-FR'); // Juste la date pour le domicile
+                const dateJolie = new Date(datetimeStr).toLocaleDateString('fr-FR'); 
 
                 if (patientData && patientData.telephone && typeof envoyerSMSNotification === 'function') {
                     envoyerSMSNotification(patientData.telephone, dateJolie, medecinNom);
@@ -84,10 +84,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function loadSpecialtiesAndDoctors() {
     const select = document.getElementById('specialite-select');
     
-    // On récupère les médecins avec leur tarif domicile
+    // LA CORRECTION EST ICI : On demande à Supabase de nous envoyer aussi la colonne 'commune'
     const { data: medecins, error } = await window.supabaseClient
         .from('medecins')
-        .select('id, first_name, last_name, specialite, note_moyenne, tarif_domicile');
+        .select('id, first_name, last_name, specialite, note_moyenne, tarif_domicile, commune');
 
     if (error || !medecins || medecins.length === 0) {
         select.innerHTML = '<option value="">Aucun médecin disponible</option>';
@@ -129,6 +129,11 @@ function afficherMedecins(e) {
             }
         }
 
+        // LA CORRECTION EST ICI : On crée le badge avec la commune
+        const communeBadge = med.commune 
+            ? `<div class="mt-2"><span class="badge bg-light text-dark border"><i class="fas fa-map-marker-alt text-danger me-1"></i> Réside à ${med.commune}</span></div>` 
+            : `<div class="mt-2"><span class="badge bg-light text-muted border"><i class="fas fa-map-marker-alt me-1"></i> Commune non précisée</span></div>`;
+
         const card = document.createElement('div');
         card.className = 'col-md-6';
         card.innerHTML = `
@@ -139,8 +144,9 @@ function afficherMedecins(e) {
                     </div>
                     <div>
                         <h6 class="fw-bold mb-1">${nomComplet}</h6>
-                        <div class="small mb-2">${starsHTML} <span class="text-muted ms-1">(${note})</span></div>
-                        <button class="btn btn-sm btn-outline-danger fw-bold" onclick="passerAEtape2('${med.id}', '${nomComplet.replace(/'/g, "\\'")}')">
+                        <div class="small mb-1">${starsHTML} <span class="text-muted ms-1">(${note})</span></div>
+                        ${communeBadge}
+                        <button class="btn btn-sm btn-outline-danger fw-bold mt-3" onclick="passerAEtape2('${med.id}', '${nomComplet.replace(/'/g, "\\'")}')">
                             <i class="fas fa-ambulance me-1"></i> Demander une visite
                         </button>
                     </div>
