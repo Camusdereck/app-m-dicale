@@ -26,10 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 last_name: document.getElementById('doctorLastName').value,
                 email: document.getElementById('doctorEmail').value,
                 phone: document.getElementById('doctorPhone').value,
-                
-                // LA NOUVELLE INFO EST ICI 👇
                 commune: document.getElementById('doctorCommune').value, 
-                
                 specialite: document.getElementById('specialite').value, 
                 order_number: document.getElementById('orderNumber').value, 
                 password: document.getElementById('doctorPassword').value
@@ -52,46 +49,41 @@ function translateError(msgEnAnglais) {
 }
 
 // --- FONCTION PRINCIPALE D'INSCRIPTION ---
-// --- FONCTION PRINCIPALE D'INSCRIPTION ---
 async function handleSignUp(userData, table, submitBtn) {
     const originalText = submitBtn.innerHTML;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Création...';
     submitBtn.disabled = true;
 
     try {
-        // 1. On crée le compte AUTH d'abord
         const { data: authData, error: authError } = await window.supabaseClient.auth.signUp({
             email: userData.email,
             password: userData.password,
         });
 
+        // 1. Si Supabase renvoie une erreur franche
         if (authError) throw authError;
 
-        // 👇 LA CORRECTION EST ICI : On vérifie si l'utilisateur est "vide" (email déjà pris)
-        if (!authData || !authData.user) {
+        // 2. PROTECTION ULTIME : Si l'utilisateur est vide, c'est que l'email existe
+        // Les `?.` empêchent JavaScript de planter s'il cherche l'ID dans le vide.
+        if (!authData?.user?.id) {
             throw new Error("User already registered");
         }
 
         const profileData = { ...userData, id: authData.user.id };
         delete profileData.password; 
 
-        // 2. On insère dans la base de données (patients ou medecins)
         const { error: dbError } = await window.supabaseClient
             .from(table)
             .insert([profileData]);
 
         if (dbError) throw dbError;
 
-        // 3. Succès !
         alert("✅ Inscription réussie ! Un code de confirmation a été envoyé à " + userData.email + ".");
         window.location.href = "verification.html?email=" + encodeURIComponent(userData.email);
 
     } catch (err) {
-        // On affiche l'erreur en français grâce à notre traducteur
         alert("Attention : " + translateError(err.message));
-        console.error(err);
-        
-        // On remet le bouton à la normale
+        console.error("Détails :", err);
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     }
