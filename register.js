@@ -52,6 +52,7 @@ function translateError(msgEnAnglais) {
 }
 
 // --- FONCTION PRINCIPALE D'INSCRIPTION ---
+// --- FONCTION PRINCIPALE D'INSCRIPTION ---
 async function handleSignUp(userData, table, submitBtn) {
     const originalText = submitBtn.innerHTML;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Création...';
@@ -64,8 +65,12 @@ async function handleSignUp(userData, table, submitBtn) {
             password: userData.password,
         });
 
-        // Si erreur Supabase (ex: email déjà pris), on s'arrête ici proprement
         if (authError) throw authError;
+
+        // 👇 LA CORRECTION EST ICI : On vérifie si l'utilisateur est "vide" (email déjà pris)
+        if (!authData || !authData.user) {
+            throw new Error("User already registered");
+        }
 
         const profileData = { ...userData, id: authData.user.id };
         delete profileData.password; 
