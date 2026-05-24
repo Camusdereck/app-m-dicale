@@ -62,11 +62,10 @@ async function handleSignUp(userData, table, submitBtn) {
 
         if (authError) throw authError;
 
-        // 👇 DIAGNOSTIC : Si l'ID est absent, on affiche la structure réelle dans la console
+        // PROTECTION FINALE : 
+        // Si l'e-mail existe déjà, Supabase renvoie un utilisateur vide.
         if (!authData?.user?.id) {
-            console.log("Contenu réel de authData :", authData);
-            // On lève une erreur générique pour voir ce qui bloque
-            throw new Error("Vérification requise - Regarder la console ou les paramètres SMTP");
+            throw new Error("User already registered");
         }
 
         const profileData = { ...userData, id: authData.user.id };
@@ -82,9 +81,8 @@ async function handleSignUp(userData, table, submitBtn) {
         window.location.href = "verification.html?email=" + encodeURIComponent(userData.email);
 
     } catch (err) {
-        // On affiche l'erreur brute pour comprendre le blocage
-        alert("Détail du blocage : " + err.message);
-        console.error("Détails complets :", err);
+        alert("Attention : " + translateError(err.message));
+        console.error("Détails :", err);
         
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
