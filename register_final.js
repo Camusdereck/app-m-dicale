@@ -60,13 +60,13 @@ async function handleSignUp(userData, table, submitBtn) {
             password: userData.password,
         });
 
-        // 1. Si Supabase renvoie une erreur franche
         if (authError) throw authError;
 
-        // 2. PROTECTION ULTIME : Si l'utilisateur est vide, c'est que l'email existe
-        // Les `?.` empêchent JavaScript de planter s'il cherche l'ID dans le vide.
+        // 👇 DIAGNOSTIC : Si l'ID est absent, on affiche la structure réelle dans la console
         if (!authData?.user?.id) {
-            throw new Error("User already registered");
+            console.log("Contenu réel de authData :", authData);
+            // On lève une erreur générique pour voir ce qui bloque
+            throw new Error("Vérification requise - Regarder la console ou les paramètres SMTP");
         }
 
         const profileData = { ...userData, id: authData.user.id };
@@ -78,13 +78,14 @@ async function handleSignUp(userData, table, submitBtn) {
 
         if (dbError) throw dbError;
 
-        // 3. Succès !
-        alert("✅ Inscription réussie ! Vous pouvez maintenant vous connecter à votre compte.");
-        window.location.href = "connexion.html";
+        alert("✅ Inscription réussie ! Un code de confirmation a été envoyé à " + userData.email + ".");
+        window.location.href = "verification.html?email=" + encodeURIComponent(userData.email);
 
     } catch (err) {
-        alert("Attention : " + translateError(err.message));
-        console.error("Détails :", err);
+        // On affiche l'erreur brute pour comprendre le blocage
+        alert("Détail du blocage : " + err.message);
+        console.error("Détails complets :", err);
+        
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
     }
