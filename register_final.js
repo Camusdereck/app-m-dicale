@@ -78,8 +78,9 @@ async function handleSignUp(userData, table, submitBtn) {
 
         if (dbError) throw dbError;
 
-        alert("✅ Inscription réussie ! Un code de confirmation a été envoyé à " + userData.email + ".");
-        window.location.href = "verification.html?email=" + encodeURIComponent(userData.email);
+        // 3. Succès !
+        alert("✅ Inscription réussie ! Vous pouvez maintenant vous connecter à votre compte.");
+        window.location.href = "connexion.html";
 
     } catch (err) {
         alert("Attention : " + translateError(err.message));
